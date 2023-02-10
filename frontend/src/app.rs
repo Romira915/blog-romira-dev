@@ -2,7 +2,7 @@ use yew::prelude::*;
 
 #[function_component(App)]
 pub fn app() -> Html {
-    let hello = "hello";
+    let hello = "deploy from gha v2";
     html! {
         <main>
             <img class="logo" src="https://yew.rs/img/logo.png" alt="Yew logo" />
@@ -12,4 +12,3 @@ pub fn app() -> Html {
         </main>
     }
 }
-
