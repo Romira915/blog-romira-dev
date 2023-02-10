@@ -18,6 +18,24 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/cache@v3
+        id: cache-build
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ./**/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-build
+
+      - uses: actions-rs/toolchain@v1
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          override: true
+
       - name: install toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -25,6 +43,10 @@ jobs:
           target: wasm32-unknown-unknown
           override: true
           profile: minimal
+
+      - uses: jetli/wasm-bindgen-action@v0.2.0
+        with:
+          version: "latest"
 
       - name: Install trunk
         uses: jetli/trunk-action@v0.1.0
