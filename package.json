@@ -1,0 +1,34 @@
+{
+  "name": "blog-romira-dev",
+  "version": "1.0.0",
+  "repository": "git@github.com:Romira915/blog-romira-dev.git",
+  "author": "Romira915 <40430090+Romira915@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "trunk.watch": "trunk watch",
+    "cargo.watch": "cargo watch -x 'run --bin=ssr_server --features=ssr -- --dir dist'",
+    "trunk.build": "trunk build",
+    "cargo.build": "cargo run --bin=ssr_server --features=ssr -- --dir dist",
+    "debug.build": "run-s trunk.build cargo.build",
+    "dev": "npm-watch debug.build"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "npm-watch": "^0.11.0"
+  },
+  "volta": {
+    "node": "18.14.2",
+    "yarn": "1.22.19"
+  },
+  "watch": {
+    "debug.build": {
+      "patterns": [
+        "src",
+        "index.html",
+        "Cargo.toml",
+        ".env"
+      ],
+      "extensions": "rs"
+    }
+  }
+}

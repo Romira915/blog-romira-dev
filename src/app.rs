@@ -4,7 +4,8 @@ use gloo::history::{AnyHistory, History, MemoryHistory};
 use yew::{function_component, html, AttrValue, Html, Properties};
 use yew_router::{BrowserRouter, Router, Switch};
 
-use crate::routes::Route;
+// use crate::components::posts::Post;
+use crate::{components::posts::Post, routes::Route};
 
 #[function_component]
 pub fn App() -> Html {
@@ -65,7 +66,7 @@ fn switch(routes: Route) -> Html {
             html! { <h1>{id}</h1> }
         }
         Route::Posts => {
-            html! { <h1>{"Posts"}</h1> }
+            html! { <Post />}
         }
         Route::Author { id: _ } => {
             html! { <h1>{"Author"}</h1>}

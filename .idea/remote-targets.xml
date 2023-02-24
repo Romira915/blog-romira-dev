@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="WSL - Ubuntu" type="wsl" uuid="283032b9-ed08-48f9-956a-c52f2b71213b">
+        <config>
+          <option name="distributionMsId" value="Ubuntu" />
+          <option name="projectRootOnTarget" value="/mnt/d/Users/romira/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/jbr/bin&#10;/blog-romira-dev" />
+        </config>
+        <ContributedStateBase type="RsLanguageRuntime">
+          <config>
+            <option name="cargoPath" value="/home/romira/.cargo/bin/cargo" />
+            <option name="cargoVersion" value="1.69.0-nightly (82c3bb79e 2023-02-04)" />
+            <option name="localBuildArgs" value="--target=x86_64-unknown-linux-gnu" />
+            <option name="rustcPath" value="/home/romira/.cargo/bin/rustc" />
+            <option name="rustcVersion" value="1.69.0-nightly (ef934d9b6 2023-02-08)" />
+          </config>
+        </ContributedStateBase>
+        <ContributedStateBase type="RsLanguageRuntime">
+          <config />
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
