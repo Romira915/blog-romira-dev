@@ -2,9 +2,30 @@ use std::collections::HashMap;
 
 use gloo::history::{AnyHistory, History, MemoryHistory};
 use yew::{function_component, html, AttrValue, Html, Properties};
-use yew_router::{Router, Switch};
+use yew_router::{BrowserRouter, Router, Switch};
 
 use crate::routes::Route;
+
+#[function_component]
+pub fn App() -> Html {
+    html! {
+        <BrowserRouter>
+            <main>
+                <Switch<Route> render={switch} />
+            </main>
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    { "Powered by " }
+                    <a href="https://yew.rs">{ "Yew" }</a>
+                    { " using " }
+                    <a href="https://bulma.io">{ "Bulma" }</a>
+                    { " and images from " }
+                    <a href="https://unsplash.com">{ "Unsplash" }</a>
+                </div>
+            </footer>
+        </BrowserRouter>
+    }
+}
 
 #[derive(Properties, PartialEq, Eq, Debug)]
 
