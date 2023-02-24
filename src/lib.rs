@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use gloo::history::{AnyHistory, History, MemoryHistory};
 
-
 use yew::prelude::*;
 use yew_router::prelude::*;
 
