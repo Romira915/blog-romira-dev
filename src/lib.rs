@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use gloo::history::{AnyHistory, History, MemoryHistory};
-use serde::{Deserialize, Serialize};
-use uuid::Uuid;
+
+
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -63,7 +63,7 @@ fn switch(routes: Route) -> Html {
         Route::Posts => {
             html! { <h1>{"Posts"}</h1> }
         }
-        Route::Author { id } => {
+        Route::Author { id: _ } => {
             html! { <h1>{"Author"}</h1>}
         }
         Route::Authors => {
