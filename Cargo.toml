@@ -15,9 +15,11 @@ required-features = ["ssr"]
 
 [dependencies]
 bytes = "1.4.0"
+chrono = "0.4.23"
 futures = {version = "0.3.26", features = ["std"], default-features = false}
 gloo = "0.8.0"
 log = "0.4.17"
+once_cell = "1.17.1"
 reqwest = {version = "0.11.14", features = ["json"]}
 serde = {version = "1.0.152", features = ["derive"]}
 uuid = {version = "1.3.0", features = ["serde"]}
@@ -31,12 +33,16 @@ wasm-logger = "0.2"
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 axum = "0.5.17"
 clap = {version = "4.1.6", features = ["derive"]}
-env_logger = "0.10.0"
+dotenv = "0.15.0"
+envy = "0.4.2"
+fern = {version = "0.6.1", features = ["colored"]}
 hyper = {version = "0.14", features = ["server", "http1"]}
 jemallocator = "0.5"
 tokio = {version = "1.25.0", features = ["full"]}
 tower = {version = "0.4.13", features = ["make"]}
 tower-http = {version = "0.3.5", features = ["fs"]}
+tracing = "0.1.37"
+tracing-subscriber = "0.3.16"
 
 [features]
 hydration = ["yew/hydration"]

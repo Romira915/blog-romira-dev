@@ -12,6 +12,7 @@ use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{Extension, Router};
 use blog_romira_dev::app::{ServerApp, ServerAppProps};
+use blog_romira_dev::setting::{init_logger, CONFIG};
 use clap::Parser;
 use futures::stream::{self, StreamExt};
 use hyper::server::Server;
@@ -29,6 +30,8 @@ struct Opt {
     /// the "dist" created by trunk directory to be served for hydration.
     #[arg(short, long)]
     dir: PathBuf,
+    #[arg(short, long)]
+    log_file: Option<PathBuf>,
 }
 
 async fn render(
@@ -75,11 +78,11 @@ where
 
 #[tokio::main]
 async fn main() {
-    let exec = Executor::default();
-
-    env_logger::init();
-
     let opts = Opt::parse();
+
+    init_logger(CONFIG.rust_log(), opts.log_file).unwrap();
+
+    let exec = Executor::default();
 
     let index_html_s = tokio::fs::read_to_string(opts.dir.join("index.html"))
         .await
@@ -115,7 +118,7 @@ async fn main() {
             handle_error,
         ));
 
-    println!("You can view the website at: http://localhost:8080/");
+    log::info!("You can view the website at: http://localhost:8080/");
 
     Server::bind(&"0.0.0.0:8080".parse().unwrap())
         .executor(exec)
