@@ -27,7 +27,7 @@ static GLOBAL: jemallocator::Jemalloc = jemallocator::Jemalloc;
 #[derive(Parser, Debug)]
 struct Opt {
     /// the "dist" created by trunk directory to be served for hydration.
-    #[clap(short, long, parse(from_os_str))]
+    #[arg(short, long)]
     dir: PathBuf,
 }
 
@@ -117,7 +117,7 @@ async fn main() {
 
     println!("You can view the website at: http://localhost:8080/");
 
-    Server::bind(&"127.0.0.1:8080".parse().unwrap())
+    Server::bind(&"0.0.0.0:8080".parse().unwrap())
         .executor(exec)
         .serve(app.into_make_service())
         .await
