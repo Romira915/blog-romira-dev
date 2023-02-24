@@ -12,7 +12,7 @@ use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{Extension, Router};
 use blog_romira_dev::app::{ServerApp, ServerAppProps};
-use blog_romira_dev::setting::{init_logger, CONFIG};
+use blog_romira_dev::settings::{init_logger, CONFIG};
 use clap::Parser;
 use futures::stream::{self, StreamExt};
 use hyper::server::Server;
