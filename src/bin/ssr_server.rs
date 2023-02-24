@@ -11,7 +11,7 @@ use axum::http::{Request, StatusCode};
 use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{Extension, Router};
-use blog_romira_dev::{ServerApp, ServerAppProps};
+use blog_romira_dev::app::{ServerApp, ServerAppProps};
 use clap::Parser;
 use futures::stream::{self, StreamExt};
 use hyper::server::Server;
