@@ -1,11 +1,10 @@
 use std::collections::HashMap;
 
 use gloo::history::{AnyHistory, History, MemoryHistory};
-use yew::{function_component, html, AttrValue, Html, Properties};
+use yew::{function_component, html, AttrValue, Html, Properties, Suspense};
 use yew_router::{BrowserRouter, Router, Switch};
 
-// use crate::components::posts::Post;
-use crate::{components::posts::Post, routes::Route};
+use crate::{components::posts::Posts, routes::Route};
 
 #[function_component]
 pub fn App() -> Html {
@@ -66,7 +65,12 @@ fn switch(routes: Route) -> Html {
             html! { <h1>{id}</h1> }
         }
         Route::Posts => {
-            html! { <Post />}
+            let fallback = html! {<div>{"Loading..."}</div>};
+            html! {
+                <Suspense {fallback}>
+                    <Posts />
+                </Suspense>
+            }
         }
         Route::Author { id: _ } => {
             html! { <h1>{"Author"}</h1>}
