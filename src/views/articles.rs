@@ -8,21 +8,6 @@ use serde_json::Value;
 use uuid::Uuid;
 use yew::prelude::*;
 
-#[cfg(feature = "ssr")]
-async fn fetch_posts() -> String {
-    let client = Client::new();
-    let response = client
-        .get("https://blog-romira-dev.cdn.newt.so/v1/blog/article")
-        .header(
-            "Authorization",
-            &format!("Bearer {}", CONFIG.newt_api_key()),
-        )
-        .send()
-        .await;
-
-    serde_json::to_string(&response.unwrap().json::<Value>().await.unwrap()).unwrap()
-}
-
 #[derive(Serialize, Deserialize)]
 struct UuidResponse {
     uuid: Uuid,

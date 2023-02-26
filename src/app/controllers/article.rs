@@ -171,6 +171,7 @@ const response: &'static str = r###"{
   ]
 }"###;
 
+#[cfg(feature = "ssr")]
 pub(crate) async fn fetch_articles() -> Result<Articles, serde_json::Error> {
     let client = Client::new();
     log::debug!("fetch articles.");

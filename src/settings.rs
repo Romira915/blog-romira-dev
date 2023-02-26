@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use once_cell::sync::Lazy;
 use serde::Deserialize;
 
-const NEWT_CDN_BASE_URL: &'static str = "https://blog-romira-dev.cdn.newt.so";
+const NEWT_CDN_BASE_URL: &'static str = "https://blog-romira-dev.cdn.newt.so/v1";
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
