@@ -1,3 +1,6 @@
-"emmet.includeLanguages": {
-    "rust": "html",
+{
+  "emmet.includeLanguages": {
+    "rust": "html"
+  },
+  "codic.case": "snake_case"
 }
