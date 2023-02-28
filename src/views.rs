@@ -10,8 +10,8 @@ use gloo::{
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumIter};
 use yew::{
-    function_component, html, use_effect_with_deps, use_reducer, use_state, AttrValue, Callback,
-    Html, Properties, Reducible, Suspense,
+    classes, function_component, html, use_effect_with_deps, use_reducer, use_state, AttrValue,
+    Callback, Html, Properties, Reducible, Suspense,
 };
 use yew_router::{BrowserRouter, Router, Switch};
 use yewdux::prelude::use_store;
@@ -60,20 +60,23 @@ pub fn Content() -> Html {
 
     html!(
         <div class={&color_mode.to_string()}>
-            <Header />
-            <main>
-                <Switch<Route> render={switch} />
-            </main>
-            <footer class="footer">
-                <div class="content has-text-centered">
-                    { "Powered by " }
-                    <a href="https://yew.rs">{ "Yew" }</a>
-                    { " using " }
-                    <a href="https://bulma.io">{ "Bulma" }</a>
-                    { " and images from " }
-                    <a href="https://unsplash.com">{ "Unsplash" }</a>
-                </div>
-            </footer>
+            <div class={classes!("w-screen", "h-screen",
+            "bg-light-background", "dark:bg-dark-background")}>
+                <Header color_mode={color_mode} />
+                <main>
+                    <Switch<Route> render={switch} />
+                </main>
+                <footer class="footer">
+                    <div class="content has-text-centered">
+                        { "Powered by " }
+                        <a href="https://yew.rs">{ "Yew" }</a>
+                        { " using " }
+                        <a href="https://bulma.io">{ "Bulma" }</a>
+                        { " and images from " }
+                        <a href="https://unsplash.com">{ "Unsplash" }</a>
+                    </div>
+                </footer>
+            </div>
         </div>
     )
 }

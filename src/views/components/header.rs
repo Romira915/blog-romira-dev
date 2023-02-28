@@ -1,30 +1,42 @@
+use std::rc::Rc;
+
 use gloo::storage::{LocalStorage, Storage};
 use yew::{
-    function_component, html, Callback, Html, MouseEvent, Properties, UseReducerHandle,
-    UseStateHandle,
+    function_component, html, use_effect_with_deps, Callback, Html, MouseEvent, Properties,
+    UseReducerHandle, UseStateHandle,
 };
+use yew_router::prelude::Link;
 use yewdux::prelude::{use_store, Dispatch};
 
-use crate::state::{ColorMode, ColorModeActions};
+use crate::{
+    routes::Route,
+    state::{ColorMode, ColorModeActions},
+};
 
 #[derive(PartialEq, Properties)]
-pub struct HeaderProps {}
+pub struct HeaderProps {
+    pub(crate) color_mode: Rc<ColorMode>,
+}
 
 #[function_component]
 pub fn Header(props: &HeaderProps) -> Html {
-    let (color_mode, color_mode_dispatch) = use_store::<ColorMode>();
-    let HeaderProps {} = props;
-    let toggle_color_mode = color_mode_dispatch.apply_callback(|_| ColorModeActions::Toggle);
+    let HeaderProps { color_mode } = props;
+    let toggle_color_mode =
+        Dispatch::<ColorMode>::new().apply_callback(|_| ColorModeActions::Toggle);
 
     html! {
         <header class="bg-light-primary text-light-text
                      dark:bg-dark-primary dark:text-dark-text">
             <div class="container mx-auto
                         flex flex-wrap flex-row items-center justify-between px-1 py-5">
-                <h1 class="grow text-xl md:text-2xl lg:text-4xl">{"romira's develop blog"}</h1>
-                <button onclick={toggle_color_mode} class="">
+                <h1 class="grow text-xl md:text-2xl lg:text-4xl">
+                    <Link<Route> to={Route::Home}>
+                        {"romira's develop blog"}
+                    </Link<Route>>
+                </h1>
+                <button onclick={toggle_color_mode}>
                     {
-                        if *color_mode == ColorMode::Light {
+                        if **color_mode == ColorMode::Light {
                             html! {
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>

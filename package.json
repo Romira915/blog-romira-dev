@@ -11,13 +11,11 @@
     "cargo.watch": "cargo watch -x 'run --bin=ssr_server --features=ssr -- --dir dist'",
     "trunk.build": "trunk build",
     "cargo.build": "cargo run --bin=ssr_server --features=ssr -- --dir dist",
-    "debug.build": "run-p tw.build trunk.build cargo.build",
-    "watch": "npm-watch debug.build",
-    "hotreload": "browser-sync start --config bs-config.js",
-    "dev": "run-p hotreload watch"
+    "rust.build": "run-s trunk.build cargo.build",
+    "debug.build": "run-p tw.build rust.build",
+    "dev": "npm-watch debug.build"
   },
   "devDependencies": {
-    "browser-sync": "^2.28.1",
     "npm-run-all": "^4.1.5",
     "npm-watch": "^0.11.0",
     "tailwindcss": "^3.2.7"
