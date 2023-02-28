@@ -4,6 +4,7 @@ use once_cell::sync::Lazy;
 use serde::Deserialize;
 
 const NEWT_CDN_BASE_URL: &'static str = "https://blog-romira-dev.cdn.newt.so/v1";
+pub(crate) const COLOR_MODE_STATE_KEY: &'static str = "blog.romira.dev.color-mode";
 
 #[derive(Debug, Deserialize)]
 pub struct Config {

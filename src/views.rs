@@ -1,30 +1,35 @@
 pub(crate) mod articles;
+pub(crate) mod components;
 
 use std::collections::HashMap;
 
-use gloo::history::{AnyHistory, History, MemoryHistory};
-use yew::{function_component, html, AttrValue, Html, Properties, Suspense};
+use gloo::{
+    history::{AnyHistory, History, MemoryHistory},
+    storage::{LocalStorage, Storage},
+};
+use serde::{Deserialize, Serialize};
+use strum_macros::{Display, EnumIter};
+use yew::{
+    function_component, html, use_effect_with_deps, use_reducer, use_state, AttrValue, Callback,
+    Html, Properties, Reducible, Suspense,
+};
 use yew_router::{BrowserRouter, Router, Switch};
+use yewdux::prelude::use_store;
 
-use crate::{routes::Route, views::articles::Posts};
+use crate::{
+    routes::Route,
+    settings::COLOR_MODE_STATE_KEY,
+    state::ColorMode,
+    views::{articles::Posts, components::header::Header},
+};
+
+use self::components::headline::Headline;
 
 #[function_component]
 pub fn App() -> Html {
     html! {
         <BrowserRouter>
-            <main>
-                <Switch<Route> render={switch} />
-            </main>
-            <footer class="footer">
-                <div class="content has-text-centered">
-                    { "Powered by " }
-                    <a href="https://yew.rs">{ "Yew" }</a>
-                    { " using " }
-                    <a href="https://bulma.io">{ "Bulma" }</a>
-                    { " and images from " }
-                    <a href="https://unsplash.com">{ "Unsplash" }</a>
-                </div>
-            </footer>
+            <Content />
         </BrowserRouter>
     }
 }
@@ -44,6 +49,18 @@ pub fn ServerApp(props: &ServerAppProps) -> Html {
 
     html! {
         <Router history={history}>
+            <Content />
+        </Router>
+    }
+}
+
+#[function_component]
+pub fn Content() -> Html {
+    let (color_mode, _) = use_store::<ColorMode>();
+
+    html!(
+        <div class={&color_mode.to_string()}>
+            <Header />
             <main>
                 <Switch<Route> render={switch} />
             </main>
@@ -57,8 +74,8 @@ pub fn ServerApp(props: &ServerAppProps) -> Html {
                     <a href="https://unsplash.com">{ "Unsplash" }</a>
                 </div>
             </footer>
-        </Router>
-    }
+        </div>
+    )
 }
 
 fn switch(routes: Route) -> Html {
@@ -81,7 +98,9 @@ fn switch(routes: Route) -> Html {
             html! { <h1>{"Authors"}</h1> }
         }
         Route::Home => {
-            html! { <h1>{"Home"}</h1> }
+            html! {
+               <Headline />
+            }
         }
         Route::NotFound => {
             html! { <h1>{"NotFound"}</h1> }

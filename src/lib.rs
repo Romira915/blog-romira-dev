@@ -1,5 +1,7 @@
 pub mod app;
 pub mod prelude;
-mod routes;
+pub(crate) mod routes;
 pub mod settings;
+pub(crate) mod state;
+pub(crate) mod test_data;
 pub(crate) mod views;
