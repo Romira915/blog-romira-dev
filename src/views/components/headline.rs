@@ -14,13 +14,13 @@ pub fn Headline(props: &HeadlineProps) -> Html {
     let categorie = "develop";
 
     html! {
-        <Link<Route> classes={classes!("container", "flex", "mx-auto", "px-5", "py-3",
+        <Link<Route> classes={classes!("container", "flex", "mx-auto", "px-5", "py-3", "max-w-lg",
         "bg-light-content-background", "text-light-text",
         "dark:bg-dark-content-background", "dark:text-dark-text")} to={Route::Home}>
-            <figure class="flex float-left">
+            <figure class="flex p-3">
                 <img src={thumbnail_url} alt="thumbnail" height="64" width="64" decoding="auto" loading="lazy" />
             </figure>
-            <div class="flex flex-col ">
+            <div class="flex flex-col items-start px-5 py-3">
                 <h2 class="flex text-xl">{title}</h2>
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-category" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
