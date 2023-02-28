@@ -1,11 +1,11 @@
-use serde::{Deserialize, Serialize};
-use strum_macros::Display;
-use yew::Reducible;
-use yewdux::store::{Reducer, Store};
+use std::ops::{Deref, DerefMut};
 
-#[derive(Clone, Copy, Debug, Display, PartialEq, Eq, Serialize, Deserialize, Store)]
+use serde::{Deserialize, Serialize};
+use strum_macros::{Display, EnumString};
+use yew::Reducible;
+
+#[derive(EnumString, Clone, Copy, Debug, Display, PartialEq, Eq, Serialize, Deserialize)]
 #[strum(serialize_all = "snake_case")]
-#[store(storage = "local")]
 pub enum ColorMode {
     Light,
     Dark,
@@ -28,12 +28,19 @@ impl Default for ColorMode {
 
 pub enum ColorModeActions {
     Toggle,
+    SetLight,
+    SetDark,
 }
 
-impl Reducer<ColorMode> for ColorModeActions {
-    fn apply(self, state: std::rc::Rc<ColorMode>) -> std::rc::Rc<ColorMode> {
-        match self {
-            ColorModeActions::Toggle => state.toggle().into(),
+impl Reducible for ColorMode {
+    type Action = ColorModeActions;
+
+    fn reduce(self: std::rc::Rc<Self>, action: Self::Action) -> std::rc::Rc<Self> {
+        match action {
+            ColorModeActions::Toggle => self.toggle(),
+            ColorModeActions::SetLight => ColorMode::Light,
+            ColorModeActions::SetDark => ColorMode::Dark,
         }
+        .into()
     }
 }

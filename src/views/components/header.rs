@@ -15,14 +15,16 @@ use crate::{
 
 #[derive(PartialEq, Properties)]
 pub struct HeaderProps {
-    pub(crate) color_mode: Rc<ColorMode>,
+    pub(crate) color_mode: UseReducerHandle<ColorMode>,
 }
 
 #[function_component]
 pub fn Header(props: &HeaderProps) -> Html {
     let HeaderProps { color_mode } = props;
-    let toggle_color_mode =
-        Dispatch::<ColorMode>::new().apply_callback(|_| ColorModeActions::Toggle);
+    let toggle_color_mode = {
+        let color_mode = color_mode.clone();
+        Callback::from(move |_| color_mode.dispatch(ColorModeActions::Toggle))
+    };
 
     html! {
         <header class="bg-light-primary text-light-text
