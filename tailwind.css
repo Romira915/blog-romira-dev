@@ -557,9 +557,21 @@ video {
   position: static;
 }
 
+.m-5 {
+  margin: 1.25rem;
+}
+
+.m-7 {
+  margin: 1.75rem;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.mb-auto {
+  margin-bottom: auto;
 }
 
 .flex {
@@ -570,16 +582,20 @@ video {
   display: table;
 }
 
-.h-screen {
-  height: 100vh;
+.h-32 {
+  height: 8rem;
 }
 
-.w-screen {
-  width: 100vw;
+.min-h-screen {
+  min-height: 100vh;
 }
 
-.max-w-lg {
-  max-width: 32rem;
+.w-32 {
+  width: 8rem;
+}
+
+.max-w-4xl {
+  max-width: 56rem;
 }
 
 .grow {
@@ -625,8 +641,13 @@ video {
   background-color: rgb(33 150 243 / var(--tw-bg-opacity));
 }
 
-.p-3 {
-  padding: 0.75rem;
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.p-5 {
+  padding: 1.25rem;
 }
 
 .px-1 {
@@ -649,9 +670,31 @@ video {
   padding-bottom: 1.25rem;
 }
 
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-extrabold {
+  font-weight: 800;
+}
+
+.italic {
+  font-style: italic;
 }
 
 .text-light-text {
@@ -684,11 +727,26 @@ video {
     font-size: 1.5rem;
     line-height: 2rem;
   }
+
+  .md\:text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+
+  .md\:text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
 }
 
 @media (min-width: 1024px) {
   .lg\:text-4xl {
     font-size: 2.25rem;
     line-height: 2.5rem;
+  }
+
+  .lg\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
   }
 }

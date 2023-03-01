@@ -1,1 +1,1 @@
-pub(crate) mod article;
+pub(crate) mod article_controller;

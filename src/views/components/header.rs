@@ -23,7 +23,10 @@ pub fn Header(props: &HeaderProps) -> Html {
     let HeaderProps { color_mode } = props;
     let toggle_color_mode = {
         let color_mode = color_mode.clone();
-        Callback::from(move |_| color_mode.dispatch(ColorModeActions::Toggle))
+        Callback::from(move |_| {
+            log::debug!("on click color mode toggle button.");
+            color_mode.dispatch(ColorModeActions::Toggle)
+        })
     };
 
     html! {
@@ -31,10 +34,10 @@ pub fn Header(props: &HeaderProps) -> Html {
                      dark:bg-dark-primary dark:text-dark-text">
             <div class="container mx-auto
                         flex flex-wrap flex-row items-center justify-between px-1 py-5">
-                <h1 class="grow text-xl md:text-2xl lg:text-4xl">
-                    <Link<Route> to={Route::Home}>
+                <h1 class="grow font-extrabold italic text-xl md:text-2xl lg:text-4xl">
+                    <a href="/">
                         {"romira's develop blog"}
-                    </Link<Route>>
+                    </a>
                 </h1>
                 <button onclick={toggle_color_mode}>
                     {

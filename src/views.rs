@@ -1,5 +1,6 @@
 pub(crate) mod articles;
 pub(crate) mod components;
+pub(crate) mod page;
 
 use std::collections::HashMap;
 
@@ -25,7 +26,10 @@ use crate::{
     views::{articles::Posts, components::header::Header},
 };
 
-use self::components::headline::Headline;
+use self::{
+    components::{article_headline_view::ArticleHeadlineView, articles_view::ArticlesView},
+    page::{article_view::ArticleView, home::Home},
+};
 
 #[function_component]
 pub fn App() -> Html {
@@ -71,7 +75,7 @@ pub fn Content() -> Html {
         let color_mode = color_mode.clone();
 
         move || {
-            color_mode.clone().dispatch({
+            color_mode.dispatch({
                 let color_mode_with_storage =
                     LocalStorage::get(COLOR_MODE_STATE_KEY).unwrap_or_else(|_| ColorMode::Light);
                 match color_mode_with_storage {
@@ -85,6 +89,7 @@ pub fn Content() -> Html {
 
     use_effect_with_deps(
         move |state| {
+            log::debug!("Set LocalStorage key {}", COLOR_MODE_STATE_KEY);
             LocalStorage::set(COLOR_MODE_STATE_KEY, *state.clone()).expect("failed to set");
             || ()
         },
@@ -93,7 +98,20 @@ pub fn Content() -> Html {
 
     html!(
         <div class={&color_mode.to_string()}>
-            <div class={classes!("w-screen", "h-screen",
+            {
+                if *color_mode == ColorMode::Light {
+                    html! {
+                        <link rel="stylesheet"
+                            href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css" />
+                    }
+                } else {
+                    html! {
+                        <link rel="stylesheet"
+                            href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-dark.min.css" />
+                    }
+                }
+            }
+            <div class={classes!("min-w-screen", "min-h-screen",
             "bg-light-background", "dark:bg-dark-background")}>
                 <Header color_mode={color_mode.clone()} />
                 <main>
@@ -116,26 +134,28 @@ pub fn Content() -> Html {
 
 fn switch(routes: Route) -> Html {
     match routes {
-        Route::Post { id } => {
-            html! { <h1>{id}</h1> }
-        }
-        Route::Posts => {
+        Route::Article { id } => {
             let fallback = html! {<div>{"Loading..."}</div>};
             html! {
                 <Suspense {fallback}>
-                    <Posts />
+                    <ArticleView article_id={id} />
                 </Suspense>
             }
         }
-        Route::Author { id: _ } => {
-            html! { <h1>{"Author"}</h1>}
-        }
-        Route::Authors => {
-            html! { <h1>{"Authors"}</h1> }
+        Route::Page { page } => {
+            let fallback = html! {<div>{"Loading..."}</div>};
+            html! {
+                <Suspense {fallback}>
+                    <Home />
+                </Suspense>
+            }
         }
         Route::Home => {
+            let fallback = html! {<div>{"Loading..."}</div>};
             html! {
-               <Headline />
+                <Suspense {fallback}>
+                    <Home />
+                </Suspense>
             }
         }
         Route::NotFound => {

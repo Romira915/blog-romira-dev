@@ -1,13 +1,15 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+use super::fields::Sys;
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct Category {
     #[serde(rename = "_id")]
     id: String,
     #[serde(rename = "_sys")]
-    sys: Value,
+    sys: Sys,
     name: String,
     slug: String,
 }

@@ -14,7 +14,9 @@ name = "ssr_server"
 required-features = ["ssr"]
 
 [dependencies]
+anyhow = {version = "1.0.69", features = ["backtrace"]}
 bytes = "1.4.0"
+chrono = {version = "0.4.23", features = ["serde"]}
 dotenv = "0.15.0"
 envy = "0.4.2"
 futures = {version = "0.3.26"}
@@ -38,7 +40,6 @@ wasm-logger = "0.2"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 axum = "0.5.17"
-chrono = "0.4.23"
 clap = {version = "4.1.6", features = ["derive"]}
 hyper = {version = "0.14", features = ["server", "http1"]}
 jemallocator = "0.5"

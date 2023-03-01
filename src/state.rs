@@ -36,6 +36,7 @@ impl Reducible for ColorMode {
     type Action = ColorModeActions;
 
     fn reduce(self: std::rc::Rc<Self>, action: Self::Action) -> std::rc::Rc<Self> {
+        log::debug!("on reduce ColorMode");
         match action {
             ColorModeActions::Toggle => self.toggle(),
             ColorModeActions::SetLight => ColorMode::Light,
