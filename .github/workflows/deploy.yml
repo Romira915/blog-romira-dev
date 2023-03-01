@@ -7,30 +7,24 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [main]
-    paths:
-      - "backend/**"
-      - "api_format/**"
-
-  pull_request:
-    types: [opened, reopened, synchronize]
-    paths:
-      - "backend/**"
-      - "api_format/**"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  test:
-    runs-on: ubuntu-20.04
+  # This workflow contains a single job called "build"
+  build-deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-22.04
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
       - uses: actions/cache@v3
-        id: cache-cargo
+        id: cache
         with:
           path: |
             ~/.cargo/bin/
@@ -40,111 +34,12 @@ jobs:
             ./**/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: decode secrets file .env
-        env:
-          DOTEND_ENCODE: ${{ secrets.TEST_DOTENV }}
-
-        run: |
-          echo $DOTEND_ENCODE | base64 --decode > .env
-
-      - name: setup mariadb and redis
-        run: |
-          docker-compose -f docker-compose.yml -f docker-compose.test.yml build
-          docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
-
-      - name: Wait Database
-        run: |
-          docker-compose -f docker-compose.test.yml run wait db:3306 -- echo "MariaDB is up"
-
-      - name: migration mariadb
-        run: |
-          source .env
-          wget https://github.com/k0kubun/sqldef/releases/download/v0.11.59/mysqldef_linux_amd64.tar.gz
-          tar -zxvf mysqldef_linux_amd64.tar.gz
-          ./mysqldef -u $MARIADB_USER -p $MARIADB_PASSWORD $MARIADB_DATABASE < sql/migration.sql
-
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/setup-node@v3
         with:
-          toolchain: stable
-          target: x86_64-unknown-linux-gnu
-          override: true
-          components: rustfmt, clippy
-
-      - name: cargo fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -p want-this-frontend -- --check
-
-      - name: cargo clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: -p want-this-frontend
-
-      - name: cargo test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --release -p want-this-frontend --all-features
-
-  # This workflow contains a single job called "build"
-  build-backend:
-    if: ${{ github.event_name == 'push' }}
-    needs: [test]
-    # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # いらないんじゃないか説
-      # - uses: actions/cache@v3
-      #   id: cache-cargo
-      #   with:
-      #     path: |
-      #       ~/.cargo/bin/
-      #       ~/.cargo/registry/index/
-      #       ~/.cargo/registry/cache/
-      #       ~/.cargo/git/db/
-      #       ./**/target
-      #     key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - uses: actions/cache@v3
-        id: cache-backend
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ./**/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-backend
-
-      - name: decode secrets file .env
-        env:
-          DOTEND_ENCODE: ${{ secrets.TEST_DOTENV }}
-
-        run: |
-          echo $DOTEND_ENCODE | base64 --decode > .env
-
-      - name: setup mariadb and redis
-        run: |
-          docker-compose -f docker-compose.yml -f docker-compose.test.yml build
-          docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
-
-      - name: Wait Database
-        run: |
-          docker-compose -f docker-compose.test.yml run wait db:3306 -- echo "MariaDB is up"
-
-      - name: migration mariadb
-        run: |
-          source .env
-          wget https://github.com/k0kubun/sqldef/releases/download/v0.11.59/mysqldef_linux_amd64.tar.gz
-          tar -zxvf mysqldef_linux_amd64.tar.gz
-          ./mysqldef -u $MARIADB_USER -p $MARIADB_PASSWORD $MARIADB_DATABASE < sql/migration.sql
+          node-version: 18
+          cache: "yarn"
+      - run: yarn
+      - run: yarn tw.release
 
       - uses: actions-rs/toolchain@v1
         with:
@@ -161,56 +56,24 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --target aarch64-unknown-linux-gnu -p want-this-backend
+          args: --release --target aarch64-unknown-linux-gnu --bin=ssr_server --features=ssr
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: backend-artifact
-          path: target/aarch64-unknown-linux-gnu/release/want-this-backend
-
-  deploy:
-    needs: [build-backend]
-
-    runs-on: ubuntu-20.04
-
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: backend-artifact
-          path: ./target-backend
-
-      - name: decode secrets file .env
-        env:
-          DOTEND_ENCODE: ${{ secrets.DEPLOY_DOTENV }}
+      - name: create deploy package
         run: |
-          echo $DOTEND_ENCODE | base64 --decode > target-backend/.env
-          cp target-backend/.env sql/
+          mkdir artifact
+          mv target/aarch64-unknown-linux-gnu/release/ssr_server artifact
+          mv dist artifact
 
-      - name: deploy to backend
+      - name: deploy to OCI
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          ARGS: "-rltgoDzvO --rsync-path='sudo rsync'"
-          SOURCE: "target-backend/"
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "artifact/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
-          TARGET: ${{ secrets.REMOTE_BACKEND_TARGET }}
-
-      - name: migration file to backend
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          ARGS: "-rltgoDzvO --delete --rsync-path='sudo rsync'"
-          SOURCE: "sql/"
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
-          # NOTE: .want-this-tmpにマイグレーション用の一時ファイルを格納する．
-          TARGET: "~/.want-this-tmp"
+          TARGET: ${{ secrets.REMOTE_TARGET }}
 
       - name: restart service
         uses: appleboy/ssh-action@master
@@ -220,14 +83,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.REMOTE_PORT }}
           script: |
-            cd ~/.want-this-tmp
-            source ./.env
-            wget -O ./mysqldef_linux_arm64.tar.gz https://github.com/k0kubun/sqldef/releases/download/v0.11.59/mysqldef_linux_arm64.tar.gz
-            tar -zxvf mysqldef_linux_arm64.tar.gz
-            sudo systemctl stop want-this-backend.service
-            ./mysqldef -u $MARIADB_USER -h $MARIADB_ADDRESS -P $MARIADB_PORT -p $MARIADB_PASSWORD $MARIADB_DATABASE < ./migration.sql
-            sudo systemctl start want-this-backend.service
-            cd ../ && rm -rf ~/.want-this-tmp
+            sudo systemctl restart blog-romira-dev.service
 
       - name: Bump version and push tag
         uses: mathieudutour/github-tag-action@v6.0
@@ -246,10 +102,3 @@ jobs:
           draft: false
           prerelease: false
           body: ${{ steps.tag_version.outputs.changelog }}
-
-      - name: Discord notification
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: "{{ EVENT_PAYLOAD.repository.full_name }} backend has been deployed."
