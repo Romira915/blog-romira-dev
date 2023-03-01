@@ -55,7 +55,7 @@ pub(crate) fn ArticleView(props: &ArticleViewProps) -> HtmlResult {
     };
 
     Ok(html! {
-        <div class="container mx-auto max-w-4xl
+        <div class="container mx-auto max-w-4xl px-5 pb-5
         flex flex-col items-center
         bg-light-content-background text-light-text
         dark:bg-dark-content-background dark:text-dark-text">
