@@ -4,13 +4,15 @@ use once_cell::sync::Lazy;
 use serde::Deserialize;
 
 pub(crate) const NEWT_CDN_BASE_URL: &'static str = "https://blog-romira-dev.cdn.newt.so/v1";
+pub(crate) const NEWT_BASE_URL: &'static str = "https://blog-romira-dev.api.newt.so/v1";
 pub(crate) const COLOR_MODE_STATE_KEY: &'static str = "blog.romira.dev.color-mode";
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub app_origin: String,
     pub rust_log: String,
-    pub newt_api_key: String,
+    pub newt_cdn_api_token: String,
+    pub newt_api_token: String,
 }
 
 impl Config {
@@ -18,8 +20,14 @@ impl Config {
         &self.rust_log
     }
 
-    pub fn newt_api_key(&self) -> &str {
-        &self.newt_api_key
+    /** # For public access */
+    pub fn newt_cdn_api_token(&self) -> &str {
+        &self.newt_cdn_api_token
+    }
+
+    /** # For preview access */
+    pub fn newt_api_token(&self) -> &str {
+        &&self.newt_api_token
     }
 
     pub fn rust_log_to_level_filter(&self) -> log::LevelFilter {

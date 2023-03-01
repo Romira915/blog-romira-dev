@@ -5,17 +5,27 @@ use crate::app::{controllers::article_controller, models::article::Article};
 #[derive(PartialEq, Properties)]
 pub(crate) struct ArticleViewProps {
     pub(crate) article_id: String,
+    pub(crate) is_preview: Option<bool>,
 }
 
 #[function_component]
 pub(crate) fn ArticleView(props: &ArticleViewProps) -> HtmlResult {
-    let ArticleViewProps { article_id } = props;
+    let ArticleViewProps {
+        article_id,
+        is_preview,
+    } = props;
 
     let article = {
         let article_id = article_id.clone();
+        let is_preview = is_preview.clone().unwrap_or_else(|| false);
         use_prepared_state!(
             async move |_| -> Option<Article> {
-                match article_controller::fetch_article(&article_id).await {
+                let article = if is_preview {
+                    article_controller::fetch_article_with_preview(&article_id).await
+                } else {
+                    article_controller::fetch_article_with_public(&article_id).await
+                };
+                match article {
                     Ok(article) => Some(article),
                     Err(e) => {
                         log::warn!("{:#?} article_id: {}", e, article_id);

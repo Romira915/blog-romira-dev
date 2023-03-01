@@ -4,6 +4,8 @@ use yew_router::Routable;
 pub enum Route {
     #[at("/articles/:id")]
     Article { id: String },
+    #[at("/preview/:id")]
+    Preview { id: String },
     #[at("/page/:page")]
     Page { page: String },
     #[at("/")]

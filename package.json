@@ -10,8 +10,10 @@
     "trunk.watch": "trunk watch",
     "cargo.watch": "cargo watch -x 'run --bin=ssr_server --features=ssr -- --dir dist'",
     "trunk.build": "trunk build",
-    "cargo.build": "cargo run --bin=ssr_server --features=ssr -- --dir dist",
-    "rust.build": "run-s trunk.build cargo.build",
+    "trunk.build.release": "trunk build --release",
+    "cargo.run": "cargo run --bin=ssr_server --features=ssr -- --dir dist",
+    "cargo.build.release": "cargo build --release --bin=ssr_server --features=ssr",
+    "rust.build": "run-s trunk.build cargo.run",
     "debug.build": "run-p tw.build rust.build",
     "dev": "npm-watch debug.build"
   },

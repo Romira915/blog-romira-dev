@@ -2,5 +2,8 @@
   "emmet.includeLanguages": {
     "rust": "html"
   },
-  "codic.case": "snake_case"
+  "codic.case": "snake_case",
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///home/romira/workspace/project/github.com/Romira915/blog-romira-dev/.github/workflows/deploy.yml"
+  }
 }

@@ -35,6 +35,6 @@ pub(crate) struct Sys {
 pub(crate) struct Raw {
     pub(crate) created_at: DateTime<Utc>,
     pub(crate) updated_at: DateTime<Utc>,
-    pub(crate) first_published_at: DateTime<Utc>,
-    pub(crate) published_at: DateTime<Utc>,
+    pub(crate) first_published_at: Option<DateTime<Utc>>,
+    pub(crate) published_at: Option<DateTime<Utc>>,
 }

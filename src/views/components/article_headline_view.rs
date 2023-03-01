@@ -29,6 +29,7 @@ pub(crate) fn ArticleHeadlineView(props: &ArticleHeadlineViewProps) -> Html {
         .sys
         .raw
         .first_published_at
+        .unwrap_or_default()
         .with_timezone(&FixedOffset::east_opt(JST_TZ * HOUR).unwrap())
         .date_naive()
         .format("%Y年%m月%d日")
@@ -43,7 +44,7 @@ pub(crate) fn ArticleHeadlineView(props: &ArticleHeadlineViewProps) -> Html {
                 <img class="object-contain h-32 w-32" src={thumbnail_url} alt="thumbnail" height="128" decoding="auto" loading="lazy" />
             </figure>
             <div class="flex flex-col items-start px-5 py-3">
-                <h2 class="flex text-base md:text-lg lg:text-xl">{title}</h2>
+                <h2 class="flex font-bold text-base md:text-lg lg:text-xl">{title}</h2>
                 <div class="flex items-center mb-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-category" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>

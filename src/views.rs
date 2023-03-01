@@ -142,6 +142,14 @@ fn switch(routes: Route) -> Html {
                 </Suspense>
             }
         }
+        Route::Preview { id } => {
+            let fallback = html! {<div>{"Loading..."}</div>};
+            html! {
+                <Suspense {fallback}>
+                    <ArticleView article_id={id} is_preview={true} />
+                </Suspense>
+            }
+        }
         Route::Page { page } => {
             let fallback = html! {<div>{"Loading..."}</div>};
             html! {
