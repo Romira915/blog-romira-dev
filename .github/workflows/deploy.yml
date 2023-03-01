@@ -44,10 +44,15 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: |
-            aarch64-unknown-linux-gnu
-            wasm32-unknown-unknown
-          override: true
+          target: aarch64-unknown-linux-gnu
+          override: false
+          profile: minimal
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          override: false
           profile: minimal
 
       - uses: jetli/wasm-bindgen-action@v0.2.0
