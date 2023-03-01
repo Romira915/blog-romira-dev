@@ -1,5 +1,7 @@
 pub mod app;
-pub(crate) mod components;
-mod routes;
-#[cfg(not(target_arch = "wasm32"))]
+pub mod prelude;
+pub(crate) mod routes;
 pub mod settings;
+pub(crate) mod state;
+pub(crate) mod test_data;
+pub(crate) mod views;

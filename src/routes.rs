@@ -2,14 +2,12 @@ use yew_router::Routable;
 
 #[derive(Routable, PartialEq, Eq, Clone, Debug)]
 pub enum Route {
-    #[at("/posts/:id")]
-    Post { id: u32 },
-    #[at("/posts")]
-    Posts,
-    #[at("/authors/:id")]
-    Author { id: u32 },
-    #[at("/authors")]
-    Authors,
+    #[at("/articles/:id")]
+    Article { id: String },
+    #[at("/preview/:id")]
+    Preview { id: String },
+    #[at("/page/:page")]
+    Page { page: String },
     #[at("/")]
     Home,
     #[not_found]

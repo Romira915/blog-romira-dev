@@ -1,0 +1,104 @@
+# This is a basic workflow to help you get started with Actions
+
+name: deploy and Release
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [main]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build-deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-22.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ./**/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "yarn"
+      - run: yarn
+      - run: yarn tw.release
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: aarch64-unknown-linux-gnu
+          override: true
+
+      - name: install gcc-aarch64-linux-gnu
+        run: |
+          sudo apt update
+          sudo apt install -y gcc-aarch64-linux-gnu
+
+      - name: build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target aarch64-unknown-linux-gnu --bin=ssr_server --features=ssr
+
+      - name: create deploy package
+        run: |
+          mkdir artifact
+          mv target/aarch64-unknown-linux-gnu/release/ssr_server artifact
+          mv dist artifact
+
+      - name: deploy to OCI
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "artifact/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+
+      - name: restart service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.REMOTE_PORT }}
+          script: |
+            sudo systemctl restart blog-romira-dev.service
+
+      - name: Bump version and push tag
+        uses: mathieudutour/github-tag-action@v6.0
+        id: tag_version
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create release
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          draft: false
+          prerelease: false
+          body: ${{ steps.tag_version.outputs.changelog }}

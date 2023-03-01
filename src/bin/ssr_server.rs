@@ -11,14 +11,19 @@ use axum::http::{Request, StatusCode};
 use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{Extension, Router};
-use blog_romira_dev::app::{ServerApp, ServerAppProps};
-use blog_romira_dev::settings::{init_logger, CONFIG};
+use blog_romira_dev::prelude::{ServerApp, ServerAppProps};
+use blog_romira_dev::settings::CONFIG;
 use clap::Parser;
 use futures::stream::{self, StreamExt};
 use hyper::server::Server;
 use tower::ServiceExt;
 use tower_http::services::ServeDir;
+use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
+use tracing_subscriber::EnvFilter;
 use yew::platform::Runtime;
+
+type Err = Box<dyn std::error::Error + Send + Sync + 'static>;
 
 // We use jemalloc as it produces better performance.
 #[global_allocator]
@@ -77,10 +82,14 @@ where
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Err> {
     let opts = Opt::parse();
 
-    init_logger(CONFIG.rust_log(), opts.log_file).unwrap();
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| CONFIG.rust_log().into()),
+        )
+        .try_init()?;
 
     let exec = Executor::default();
 
@@ -118,11 +127,14 @@ async fn main() {
             handle_error,
         ));
 
-    log::info!("You can view the website at: http://localhost:8080/");
+    let address = "0.0.0.0:8080".parse()?;
+    tracing::info!(message = "listening", addr = ?address);
+    log::info!("Browser to {}", CONFIG.app_origin);
 
-    Server::bind(&"0.0.0.0:8080".parse().unwrap())
+    Server::bind(&address)
         .executor(exec)
         .serve(app.into_make_service())
-        .await
-        .unwrap();
+        .await?;
+
+    Ok(())
 }

@@ -1,4 +1,4 @@
-use blog_romira_dev::app::App;
+use blog_romira_dev::prelude::App;
 
 fn main() {
     #[cfg(target_arch = "wasm32")]
