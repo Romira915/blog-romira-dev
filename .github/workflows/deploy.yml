@@ -47,10 +47,22 @@ jobs:
           target: aarch64-unknown-linux-gnu
           override: true
 
+      - uses: jetli/wasm-bindgen-action@v0.2.0
+        with:
+          version: "latest"
+
+      - name: Install trunk
+        uses: jetli/trunk-action@v0.1.0
+        with:
+          version: "latest"
+
       - name: install gcc-aarch64-linux-gnu
         run: |
           sudo apt update
           sudo apt install -y gcc-aarch64-linux-gnu
+
+      - name: Trunk Build
+        run: trunk build --release
 
       - name: build
         uses: actions-rs/cargo@v1
