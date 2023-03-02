@@ -40,8 +40,8 @@ pub(crate) fn ArticleHeadlineView(props: &ArticleHeadlineViewProps) -> Html {
         <a href={format!("articles/{}", id)} class={classes!("container", "flex", "mx-auto", "m-7", "px-5", "py-3", "max-w-4xl",
         "bg-light-content-background", "text-light-text",
         "dark:bg-dark-content-background", "dark:text-dark-text")}>
-            <figure class="flex m-5">
-                <img class="object-contain h-32 w-32" src={thumbnail_url} alt="thumbnail" height="128" decoding="auto" loading="lazy" />
+            <figure class="flex-none m-3">
+                <img class="object-contain h-auto w-16 min-w-16 max-w-16" src={thumbnail_url} alt="thumbnail" width="64" decoding="auto" loading="lazy" />
             </figure>
             <div class="flex flex-col items-start px-5 py-3">
                 <h2 class="flex font-bold text-base md:text-lg lg:text-xl">{title}</h2>
