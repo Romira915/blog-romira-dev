@@ -58,7 +58,7 @@ pub(crate) fn ArticleView(props: &ArticleViewProps) -> HtmlResult {
         <div class="container mx-auto max-w-4xl px-3 pb-5
         flex flex-col items-center
         bg-light-content-background text-light-text
-        dark:bg-dark-content-background dark:text-dark-text">
+        dark:bg-dark-primary dark:text-dark-text">
             <h2 class="m-5 p-5 font-bold text-2xl md:text-4xl lg:text-4xl">{title}</h2>
             <div class="markdown-body container p-5">
                 {
