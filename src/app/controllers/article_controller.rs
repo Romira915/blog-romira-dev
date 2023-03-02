@@ -1,6 +1,6 @@
 use reqwest::Client;
 
-use crate::app::models::article::{Article};
+use crate::app::models::article::{Article, Articles};
 use crate::settings::{CONFIG, NEWT_BASE_URL, NEWT_CDN_BASE_URL};
 use anyhow::{Context, Result};
 

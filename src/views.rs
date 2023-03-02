@@ -8,23 +8,26 @@ use gloo::{
     history::{AnyHistory, History, MemoryHistory},
     storage::{LocalStorage, Storage},
 };
-
-
+use serde::{Deserialize, Serialize};
+use strum_macros::{Display, EnumIter};
 use yew::{
-    classes, function_component, html, use_effect_with_deps, use_reducer, AttrValue, Html, Properties, Suspense,
+    classes, function_component, html, use_effect_with_deps, use_reducer, use_state, AttrValue,
+    Callback, Html, Properties, Reducible, Suspense,
 };
 use yew_hooks::use_effect_once;
 use yew_router::{BrowserRouter, Router, Switch};
-
+use yewdux::prelude::use_store;
 
 use crate::{
     routes::Route,
     settings::COLOR_MODE_STATE_KEY,
     state::{ColorMode, ColorModeActions},
-    views::{components::header::Header},
+    test_data::use_sleep,
+    views::{articles::Posts, components::header::Header},
 };
 
 use self::{
+    components::{article_headline_view::ArticleHeadlineView, articles_view::ArticlesView},
     page::{article_view::ArticleView, home::Home},
 };
 
@@ -74,7 +77,7 @@ pub fn Content() -> Html {
         move || {
             color_mode.dispatch({
                 let color_mode_with_storage =
-                    LocalStorage::get(COLOR_MODE_STATE_KEY).unwrap_or(ColorMode::Light);
+                    LocalStorage::get(COLOR_MODE_STATE_KEY).unwrap_or_else(|_| ColorMode::Light);
                 match color_mode_with_storage {
                     ColorMode::Light => ColorModeActions::SetLight,
                     ColorMode::Dark => ColorModeActions::SetDark,
@@ -147,7 +150,7 @@ fn switch(routes: Route) -> Html {
                 </Suspense>
             }
         }
-        Route::Page { page: _ } => {
+        Route::Page { page } => {
             let fallback = html! {<div>{"Loading..."}</div>};
             html! {
                 <Suspense {fallback}>

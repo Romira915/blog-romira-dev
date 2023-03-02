@@ -2,7 +2,7 @@ use std::rc::Rc;
 
 use yew::prelude::*;
 
-
+use crate::app::controllers::article_controller;
 use crate::app::models::article::Articles;
 use crate::views::components::articles_view::ArticlesView;
 
