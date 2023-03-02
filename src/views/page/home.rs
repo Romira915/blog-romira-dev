@@ -20,6 +20,10 @@ pub(crate) fn Home(props: &HomeProps) -> HtmlResult {
     .unwrap();
 
     Ok(html! {
-        <ArticlesView articles={Rc::new(articles.items.clone())} />
+        <div class="py-3 px-5
+        bg-light-content-border 
+        dark:bg-dark-primary-deep">
+            <ArticlesView articles={Rc::new(articles.items.clone())} />
+        </div>
     })
 }
