@@ -46,7 +46,6 @@ async fn render(
 ) -> impl IntoResponse {
     let url = url.uri().to_string();
 
-    log::debug!("access url: {}", url);
     let renderer = yew::ServerRenderer::<ServerApp>::with_props(move || ServerAppProps {
         url: url.into(),
         queries,

@@ -1,11 +1,11 @@
-
+use std::path::PathBuf;
 
 use once_cell::sync::Lazy;
 use serde::Deserialize;
 
-pub(crate) const NEWT_CDN_BASE_URL: &str = "https://blog-romira-dev.cdn.newt.so/v1";
-pub(crate) const NEWT_BASE_URL: &str = "https://blog-romira-dev.api.newt.so/v1";
-pub(crate) const COLOR_MODE_STATE_KEY: &str = "blog.romira.dev.color-mode";
+pub(crate) const NEWT_CDN_BASE_URL: &'static str = "https://blog-romira-dev.cdn.newt.so/v1";
+pub(crate) const NEWT_BASE_URL: &'static str = "https://blog-romira-dev.api.newt.so/v1";
+pub(crate) const COLOR_MODE_STATE_KEY: &'static str = "blog.romira.dev.color-mode";
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -27,7 +27,7 @@ impl Config {
 
     /** # For preview access */
     pub fn newt_api_token(&self) -> &str {
-        &self.newt_api_token
+        &&self.newt_api_token
     }
 
     pub fn rust_log_to_level_filter(&self) -> log::LevelFilter {

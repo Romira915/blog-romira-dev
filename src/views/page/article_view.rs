@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-use crate::app::{models::article::Article};
+use crate::app::{controllers::article_controller, models::article::Article};
 
 #[derive(PartialEq, Properties)]
 pub(crate) struct ArticleViewProps {
@@ -16,8 +16,8 @@ pub(crate) fn ArticleView(props: &ArticleViewProps) -> HtmlResult {
     } = props;
 
     let article = {
-        let _article_id = article_id.clone();
-        let _is_preview = (*is_preview).unwrap_or(false);
+        let article_id = article_id.clone();
+        let is_preview = is_preview.clone().unwrap_or_else(|| false);
         use_prepared_state!(
             async move |_| -> Option<Article> {
                 let article = if is_preview {
