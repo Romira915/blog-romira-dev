@@ -3,7 +3,7 @@ use std::{rc::Rc, time::Duration};
 use gloo::timers::future::sleep;
 use yew::{hook, suspense::Suspension, Reducible};
 
-pub(crate) const ARTICLE_JSON: &'static str = r###"
+pub(crate) const ARTICLE_JSON: &str = r###"
 {
   "skip": 0,
   "limit": 100,

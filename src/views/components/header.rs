@@ -1,15 +1,14 @@
-use std::rc::Rc;
 
-use gloo::storage::{LocalStorage, Storage};
+
+
 use yew::{
-    function_component, html, use_effect_with_deps, Callback, Html, MouseEvent, Properties,
-    UseReducerHandle, UseStateHandle,
+    function_component, html, Callback, Html, Properties,
+    UseReducerHandle,
 };
-use yew_router::prelude::Link;
-use yewdux::prelude::{use_store, Dispatch};
+
+
 
 use crate::{
-    routes::Route,
     state::{ColorMode, ColorModeActions},
 };
 
