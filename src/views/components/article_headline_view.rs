@@ -1,9 +1,9 @@
 use std::rc::Rc;
 
-use crate::{app::models::article::Article, routes::Route, settings::CONFIG};
+use crate::{app::models::article::Article};
 use chrono::FixedOffset;
 use yew::{classes, function_component, html, Html, Properties};
-use yew_router::prelude::Link;
+
 
 const HOUR: i32 = 3600;
 /** JST (UCT+09:00) */
