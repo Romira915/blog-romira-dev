@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::convert::Infallible;
 use std::future::Future;
 use std::path::PathBuf;
+use std::str::FromStr;
 use std::sync::Arc;
 
 use axum::body::{Body, StreamBody};
@@ -14,6 +15,7 @@ use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{Extension, Router};
 use blog_romira_dev::prelude::{ServerApp, ServerAppProps};
+use blog_romira_dev::routes::Route;
 use blog_romira_dev::settings::CONFIG;
 use clap::Parser;
 use futures::stream::{self, StreamExt};
@@ -47,6 +49,15 @@ async fn render(
     Query(queries): Query<HashMap<String, String>>,
 ) -> impl IntoResponse {
     let url = url.uri().to_string();
+
+    let route = Route::from_str(&url);
+
+    match route {
+        Ok(Route::Article { id }) => {
+            log::debug!("id {}", id);
+        }
+        _ => (),
+    }
 
     let renderer = yew::ServerRenderer::<ServerApp>::with_props(move || ServerAppProps {
         url: url.into(),
