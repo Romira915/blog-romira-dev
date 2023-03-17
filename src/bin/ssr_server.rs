@@ -27,6 +27,8 @@ use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 use yew::platform::Runtime;
 
+use blog_romira_dev::app::controllers::article_controller::get_article_ogp_tag;
+
 type Err = Box<dyn std::error::Error + Send + Sync + 'static>;
 
 // We use jemalloc as it produces better performance.
@@ -59,10 +61,16 @@ async fn render(
 
     match route {
         Ok(Route::Article { id }) => {
-            log::debug!("id {}", id);
+            log::debug!("OGP Setting {}", id);
+            let meta = get_article_ogp_tag(&id, &url, false)
+                .await
+                .unwrap_or_default();
+            index_html_top.push_str(&meta);
         }
         _ => (),
     }
+
+    let index_html_before = format!("{}{}", index_html_top, index_html_head);
 
     let renderer = yew::ServerRenderer::<ServerApp>::with_props(move || ServerAppProps {
         url: url.into(),

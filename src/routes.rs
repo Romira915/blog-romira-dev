@@ -2,6 +2,8 @@ use std::str::FromStr;
 
 use yew_router::Routable;
 
+use crate::settings::CONFIG;
+
 #[derive(Routable, PartialEq, Eq, Clone, Debug)]
 pub enum Route {
     #[at("/articles/:id")]
@@ -20,7 +22,7 @@ pub enum Route {
 impl FromStr for Route {
     type Err = anyhow::Error;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let url = url::Url::parse(&format!("http://localhost{}", s))?;
+        let url = url::Url::parse(&format!("{}{}", CONFIG.app_origin, s))?;
         let Some(path_segments) = url.path_segments() else {
             return Ok(Self::NotFound);
         };
