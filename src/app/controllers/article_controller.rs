@@ -105,6 +105,9 @@ where
                 .unwrap_or_default())
             .unwrap_or_default()
     ));
+    meta.push_str(&format!(
+        r###"<meta name=”twitter:card” content=”summary”>"###
+    ));
 
     Ok(meta)
 }
