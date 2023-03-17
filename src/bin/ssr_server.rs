@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::convert::Infallible;
 use std::future::Future;
 use std::path::PathBuf;
+use std::str::FromStr;
 use std::sync::Arc;
 
 use axum::body::{Body, StreamBody};
@@ -14,6 +15,7 @@ use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{Extension, Router};
 use blog_romira_dev::prelude::{ServerApp, ServerAppProps};
+use blog_romira_dev::routes::Route;
 use blog_romira_dev::settings::CONFIG;
 use clap::Parser;
 use futures::stream::{self, StreamExt};
@@ -24,6 +26,8 @@ use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 use yew::platform::Runtime;
+
+use blog_romira_dev::app::controllers::article_controller::get_article_ogp_tag;
 
 type Err = Box<dyn std::error::Error + Send + Sync + 'static>;
 
@@ -47,6 +51,26 @@ async fn render(
     Query(queries): Query<HashMap<String, String>>,
 ) -> impl IntoResponse {
     let url = url.uri().to_string();
+
+    log::debug!("index {:#?}", index_html_before.split_once("<head>"));
+    let (index_html_top, index_html_head) = index_html_before.split_once("<head>").unwrap();
+    let mut index_html_top = index_html_top.to_owned();
+    index_html_top.push_str("<head prefix=”og: http://ogp.me/ns#”>");
+
+    let route = Route::from_str(&url);
+
+    match route {
+        Ok(Route::Article { id }) => {
+            log::debug!("OGP Setting {}", id);
+            let meta = get_article_ogp_tag(&id, &url, false)
+                .await
+                .unwrap_or_default();
+            index_html_top.push_str(&meta);
+        }
+        _ => (),
+    }
+
+    let index_html_before = format!("{}{}", index_html_top, index_html_head);
 
     let renderer = yew::ServerRenderer::<ServerApp>::with_props(move || ServerAppProps {
         url: url.into(),
