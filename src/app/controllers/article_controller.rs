@@ -72,18 +72,18 @@ where
 
     let mut meta = String::new();
     meta.push_str(&format!(
-        r###"<meta property="og:url" content="{}{}" />"###,
+        r###"<meta property="og:url" content="{}{}">"###,
         CONFIG.app_origin, url
     ));
     meta.push_str(&format!(
-        r###"<meta property="og:type" content="article" />"###
+        r###"<meta property="og:type" content="article">"###
     ));
     meta.push_str(&format!(
-        r###"<meta property="og:title" content="{}" />"###,
+        r###"<meta property="og:title" content="{}">"###,
         article.title
     ));
     meta.push_str(&format!(
-        r###"<meta property="og:description" content="{}" />"###,
+        r###"<meta property="og:description" content="{}">"###,
         article
             .meta
             .as_ref()
@@ -91,10 +91,10 @@ where
             .unwrap_or_default()
     ));
     meta.push_str(&format!(
-        r###"<meta property="og:site_name" content="romira's develop blog" />"###,
+        r###"<meta property="og:site_name" content="romira's develop blog">"###,
     ));
     meta.push_str(&format!(
-        r###"<meta property="og:image" content="{}" />"###,
+        r###"<meta property="og:image" content="{}">"###,
         article
             .meta
             .as_ref()
@@ -107,6 +107,33 @@ where
     ));
     meta.push_str(&format!(
         r###"<meta name="twitter:card" content="summary">"###
+    ));
+    meta.push_str(&format!(
+        r###"<meta name="twitter:title" content="{}">"###,
+        article.title
+    ));
+    meta.push_str(&format!(
+        r###"<meta name="twitter:description" content="{}">"###,
+        article
+            .meta
+            .as_ref()
+            .map(|m| m.description.as_str())
+            .unwrap_or_default()
+    ));
+    meta.push_str(&format!(
+        r###"<meta name="twitter:image" content="{}">"###,
+        article
+            .meta
+            .as_ref()
+            .map(|m| m
+                .og_image
+                .as_ref()
+                .map(|i| i.src.as_str())
+                .unwrap_or_default())
+            .unwrap_or_default()
+    ));
+    meta.push_str(&format!(
+        r###"<meta name="twitter:creator" content="@Romira915">"###,
     ));
 
     Ok(meta)
