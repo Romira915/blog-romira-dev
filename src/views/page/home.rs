@@ -20,7 +20,7 @@ pub(crate) fn Home(props: &HomeProps) -> HtmlResult {
     .unwrap();
 
     Ok(html! {
-        <div class="container mx-auto py-3 px-5
+        <div class="container mx-auto max-w-4xl py-3 px-5
         bg-light-content-background
         dark:bg-dark-content-background">
             <ArticlesView articles={Rc::new(articles.items.clone())} />

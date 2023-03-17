@@ -42,14 +42,19 @@ pub(crate) fn ArticleView(props: &ArticleViewProps) -> HtmlResult {
         let body = article.body.clone().unwrap_or_default();
         (
             article.title.as_str(),
-            Html::from_html_unchecked(body.into()),
+            if cfg!(target_arch = "wasm32") {
+                html! {
+                    <h1>{""}</h1>
+                }
+            } else {
+                Html::from_html_unchecked(body.into())
+            },
         )
     } else {
         (
             "",
             html! {
-
-                <div>{"Not Found"}</div>
+                <h1>{"Not Found"}</h1>
             },
         )
     };
