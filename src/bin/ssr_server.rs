@@ -50,6 +50,11 @@ async fn render(
 ) -> impl IntoResponse {
     let url = url.uri().to_string();
 
+    log::debug!("index {:#?}", index_html_before.split_once("<head>"));
+    let (index_html_top, index_html_head) = index_html_before.split_once("<head>").unwrap();
+    let mut index_html_top = index_html_top.to_owned();
+    index_html_top.push_str("<head prefix=”og: http://ogp.me/ns#”>");
+
     let route = Route::from_str(&url);
 
     match route {
