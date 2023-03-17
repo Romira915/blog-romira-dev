@@ -6,7 +6,7 @@ use crate::app::models::article::{Article, Articles};
 use crate::settings::{CONFIG, NEWT_BASE_URL, NEWT_CDN_BASE_URL};
 use anyhow::{Context, Result};
 
-// #[cfg(feature = "ssr")]
+#[cfg(feature = "ssr")]
 pub(crate) async fn fetch_articles() -> Result<Articles, serde_json::Error> {
     use crate::test_data::{self, ARTICLE_JSON};
 
@@ -26,7 +26,7 @@ pub(crate) async fn fetch_articles() -> Result<Articles, serde_json::Error> {
     // Ok(response.unwrap().json::<Articles>().await.unwrap())
 }
 
-// #[cfg(feature = "ssr")]
+#[cfg(feature = "ssr")]
 pub(crate) async fn fetch_article(article_id: &str, is_preview: bool) -> Result<Article> {
     let (base_url, api_token) = if is_preview {
         (NEWT_BASE_URL, CONFIG.newt_api_token())
@@ -49,17 +49,17 @@ pub(crate) async fn fetch_article(article_id: &str, is_preview: bool) -> Result<
         .context("Failed to json parse")
 }
 
-// #[cfg(feature = "ssr")]
+#[cfg(feature = "ssr")]
 pub(crate) async fn fetch_article_with_public(article_id: &str) -> Result<Article> {
     fetch_article(article_id, false).await
 }
 
-// #[cfg(feature = "ssr")]
+#[cfg(feature = "ssr")]
 pub(crate) async fn fetch_article_with_preview(article_id: &str) -> Result<Article> {
     fetch_article(article_id, true).await
 }
 
-// #[cfg(feature = "ssr")]
+#[cfg(feature = "ssr")]
 pub async fn get_article_ogp_tag<T>(article_id: &str, url: T, is_preview: bool) -> Result<String>
 where
     T: Display,
