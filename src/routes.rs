@@ -26,19 +26,22 @@ impl FromStr for Route {
         };
         let path_segments = path_segments.collect::<Vec<_>>();
 
-        if let Some(first) = path_segments.get(0) {
-            match *first {
-                "articles" => {
-                    return Ok(Self::Article {
-                        id: path_segments
-                            .get(1)
-                            .map(|p| *p)
-                            .unwrap_or_default()
-                            .to_string(),
-                    })
-                }
-                _ => return Ok(Self::NotFound),
-            }
+        if let (Some(&"articles"), Some(id)) = (path_segments.get(0), path_segments.get(1)) {
+            return Ok(Self::Article { id: id.to_string() });
+        }
+
+        if let (Some(&"preview"), Some(id)) = (path_segments.get(0), path_segments.get(1)) {
+            return Ok(Self::Preview { id: id.to_string() });
+        }
+
+        if let (Some(&"page"), Some(page)) = (path_segments.get(0), path_segments.get(1)) {
+            return Ok(Self::Page {
+                page: page.to_string(),
+            });
+        }
+
+        if let Some(&"") = path_segments.get(0) {
+            return Ok(Self::Home);
         }
 
         Ok(Self::NotFound)
