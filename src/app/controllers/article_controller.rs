@@ -110,7 +110,7 @@ where
             .unwrap_or_default()
     ));
     meta.push_str(&format!(
-        r###"<meta name="twitter:card" content="summary">
+        r###"<meta name="twitter:card" content="summary_large_image">
         "###
     ));
     meta.push_str(&format!(
