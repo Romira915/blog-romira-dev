@@ -7,23 +7,21 @@ use crate::settings::{CONFIG, NEWT_BASE_URL, NEWT_CDN_BASE_URL};
 use anyhow::{Context, Result};
 
 #[cfg(feature = "ssr")]
-pub(crate) async fn fetch_articles() -> Result<Articles, serde_json::Error> {
+pub(crate) async fn fetch_articles() -> Result<Articles> {
     use crate::test_data::{self, ARTICLE_JSON};
 
     let client = Client::new();
     log::info!("fetch articles.");
-    // let response = client
-    //     .get(format!("{NEWT_CDN_BASE_URL}/blog/article"))
-    //     .header(
-    //         "Authorization",
-    //         &format!("Bearer {}", CONFIG.newt_api_key()),
-    //     )
-    //     .send()
-    //     .await;
+    let response = client
+        .get(format!("{NEWT_CDN_BASE_URL}/blog/article"))
+        .header(
+            "Authorization",
+            &format!("Bearer {}", CONFIG.newt_cdn_api_token()),
+        )
+        .send()
+        .await;
 
-    serde_json::from_str::<Articles>(ARTICLE_JSON.trim())
-
-    // Ok(response.unwrap().json::<Articles>().await.unwrap())
+    Ok(response?.json::<Articles>().await.unwrap_or_default())
 }
 
 #[cfg(feature = "ssr")]
