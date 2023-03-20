@@ -128,7 +128,7 @@ where
             .unwrap_or_default()
     ));
     meta.push_str(&format!(
-        r###"<meta name="twitter:image" content="{}">
+        r###"<meta name="twitter:image:src" content="{}">
         "###,
         article
             .meta
