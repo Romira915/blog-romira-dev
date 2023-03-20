@@ -50,8 +50,9 @@ jobs:
         with:
           version: "latest"
 
-      - name: Build
-        run: trunk build
+      # TODO: node環境構築してbuild
+      # - name: Build
+      #   run: trunk build
 
       - name: Run tests
         run: cargo test --verbose
