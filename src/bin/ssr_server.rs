@@ -59,15 +59,20 @@ async fn render(
 
     let route = Route::from_str(&url);
 
-    match route {
+    let meta = match route {
         Ok(Route::Article { id }) => {
-            log::debug!("OGP Setting {}", id);
-            let meta = get_article_ogp_tag(&id, &url, false)
-                .await
-                .unwrap_or_default();
-            index_html_top.push_str(&meta);
+            log::debug!("Article OGP Setting {}", id);
+            get_article_ogp_tag(&id, &url, false).await
         }
-        _ => (),
+        Ok(Route::Preview { id }) => {
+            log::debug!("Preview OGP Setting {}", id);
+            get_article_ogp_tag(&id, &url, true).await
+        }
+        _ => Ok("".to_string()),
+    };
+    match meta {
+        Ok(meta) => index_html_top.push_str(&meta),
+        Err(e) => log::warn!("{:#}", e),
     }
 
     let index_html_before = format!("{}{}", index_html_top, index_html_head);

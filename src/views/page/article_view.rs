@@ -28,7 +28,7 @@ pub(crate) fn ArticleView(props: &ArticleViewProps) -> HtmlResult {
                 match article {
                     Ok(article) => Some(article),
                     Err(e) => {
-                        log::warn!("{:#?} article_id: {}", e, article_id);
+                        log::warn!("{:#} article_id: {}", e, article_id);
                         None
                     }
                 }

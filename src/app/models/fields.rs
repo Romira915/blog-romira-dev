@@ -18,8 +18,8 @@ pub(crate) struct Image {
     pub(crate) file_type: String,
     pub(crate) file_size: u32,
     pub(crate) file_name: String,
-    pub(crate) width: u32,
-    pub(crate) height: u32,
+    pub(crate) width: Option<u32>,
+    pub(crate) height: Option<u32>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
