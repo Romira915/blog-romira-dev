@@ -55,8 +55,8 @@ async fn render(
     log::debug!("index {:#?}", index_html_before.split_once("<head>"));
     let (index_html_top, index_html_head) = index_html_before.split_once("<head>").unwrap();
     let mut index_html_top = index_html_top.to_owned();
-    index_html_top.push_str(r###"<head prefix=og: http://ogp.me/ns#>"###);
-    index_html_top.push_str(r###"<meta charset="utf-8">"###);
+    // index_html_top.push_str(r###"<head prefix=og: http://ogp.me/ns#>"###);
+    index_html_top.push_str(r###"<head>"###);
 
     let route = Route::from_str(&url);
 
