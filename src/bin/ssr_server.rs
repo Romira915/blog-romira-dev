@@ -11,7 +11,7 @@ use axum::error_handling::HandleError;
 use axum::extract::Query;
 use axum::handler::Handler;
 use axum::http::{Request, StatusCode};
-use axum::response::IntoResponse;
+use axum::response::{Html, IntoResponse};
 use axum::routing::get;
 use axum::{Extension, Router};
 use blog_romira_dev::prelude::{ServerApp, ServerAppProps};
@@ -55,8 +55,7 @@ async fn render(
     log::debug!("index {:#?}", index_html_before.split_once("<head>"));
     let (index_html_top, index_html_head) = index_html_before.split_once("<head>").unwrap();
     let mut index_html_top = index_html_top.to_owned();
-    // index_html_top.push_str(r###"<head prefix=og: http://ogp.me/ns#>"###);
-    index_html_top.push_str(r###"<head>"###);
+    index_html_top.push_str(r###"<head prefix=og: http://ogp.me/ns#>"###);
 
     let route = Route::from_str(&url);
 
@@ -78,12 +77,17 @@ async fn render(
         queries,
     });
 
-    StreamBody::new(
-        stream::once(async move { index_html_before })
-            .chain(renderer.render_stream())
-            .chain(stream::once(async move { index_html_after }))
-            .map(Result::<_, Infallible>::Ok),
-    )
+    let mut body = index_html_before;
+    body.push_str(&renderer.render().await);
+    body.push_str(&index_html_after);
+
+    // StreamBody::new(
+    //     stream::once(async move { index_html_before })
+    //         .chain(renderer.render_stream())
+    //         .chain(stream::once(async move { index_html_after }))
+    //         .map(Result::<_, Infallible>::Ok),
+    // )
+    Html(body)
 }
 
 // An executor to process requests on the Yew runtime.
