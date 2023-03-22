@@ -8,53 +8,17 @@ use anyhow::{Context, Result};
 
 #[cfg(feature = "ssr")]
 pub(crate) async fn fetch_articles() -> Result<Articles> {
-    use crate::test_data::{self, ARTICLE_JSON};
-
-    let client = Client::new();
-    log::info!("fetch articles.");
-    let response = client
-        .get(format!("{NEWT_CDN_BASE_URL}/blog/article"))
-        .header(
-            "Authorization",
-            &format!("Bearer {}", CONFIG.newt_cdn_api_token()),
-        )
-        .send()
-        .await;
-
-    Ok(response?.json::<Articles>().await.unwrap_or_default())
-}
-
-#[cfg(feature = "ssr")]
-pub(crate) async fn fetch_article(article_id: &str, is_preview: bool) -> Result<Article> {
-    let (base_url, api_token) = if is_preview {
-        (NEWT_BASE_URL, CONFIG.newt_api_token())
-    } else {
-        (NEWT_CDN_BASE_URL, CONFIG.newt_cdn_api_token())
-    };
-
-    let client = Client::new();
-    log::info!("fetch article. article_id: {}", article_id);
-    let response = client
-        .get(format!("{base_url}/blog/article/{article_id}"))
-        .header("Authorization", &format!("Bearer {}", api_token))
-        .send()
-        .await;
-
-    response
-        .with_context(|| format!("Failed to http request. article_id: {}", article_id))?
-        .json()
-        .await
-        .context("Failed to json parse")
+    Articles::fetch(false).await
 }
 
 #[cfg(feature = "ssr")]
 pub(crate) async fn fetch_article_with_public(article_id: &str) -> Result<Article> {
-    fetch_article(article_id, false).await
+    Article::fetch(article_id, false).await
 }
 
 #[cfg(feature = "ssr")]
 pub(crate) async fn fetch_article_with_preview(article_id: &str) -> Result<Article> {
-    fetch_article(article_id, true).await
+    Article::fetch(article_id, true).await
 }
 
 #[cfg(feature = "ssr")]
