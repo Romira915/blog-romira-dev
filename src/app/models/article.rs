@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use async_trait::async_trait;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
@@ -36,9 +36,11 @@ impl Articles {
             .get(format!("{base_url}/blog/article"))
             .header("Authorization", &format!("Bearer {}", api_token))
             .send()
-            .await;
+            .await?;
 
-        response?.json().await.context("Failed to json parse")
+        let body = response.text().await?;
+
+        serde_json::from_str(&body).with_context(|| format!("Failed to json parse. json: {}", body))
     }
 }
 
@@ -75,12 +77,10 @@ impl Article {
             .get(format!("{base_url}/blog/article/{article_id}"))
             .header("Authorization", &format!("Bearer {}", api_token))
             .send()
-            .await;
+            .await?;
 
-        response
-            .with_context(|| format!("Failed to http request. article_id: {}", article_id))?
-            .json()
-            .await
-            .context("Failed to json parse")
+        let body = response.text().await?;
+
+        serde_json::from_str(&body).with_context(|| format!("Failed to json parse. json: {}", body))
     }
 }
