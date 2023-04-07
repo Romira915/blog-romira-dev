@@ -41,7 +41,7 @@ where
         "###,
     ));
     meta.push_str(&format!(
-        r###"<meta property="og:description" content="Rustaceanが書いているブログです．" />
+        r###"<meta property="og:description" content="Rustaceanによる開発ブログです．技術共有や個人開発などを発信します．" />
         "###,
     ));
     meta.push_str(&format!(
