@@ -36,7 +36,7 @@ pub fn Header(props: &HeaderProps) -> Html {
                         flex flex-wrap flex-row items-center justify-between px-1 py-5">
                 <h1 class="grow font-extrabold italic text-xl md:text-2xl lg:text-4xl">
                     <a href="/">
-                        {"romira's develop blog"}
+                        {"Romira's develop blog"}
                     </a>
                 </h1>
                 <button onclick={toggle_color_mode}>

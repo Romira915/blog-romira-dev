@@ -21,9 +21,9 @@ pub(crate) fn ArticleView(props: &ArticleViewProps) -> HtmlResult {
         use_prepared_state!(
             async move |_| -> Option<Article> {
                 let article = if is_preview {
-                    article_controller::fetch_article_with_preview(&article_id).await
+                    article_controller::fetch_preview_article(&article_id).await
                 } else {
-                    article_controller::fetch_article_with_public(&article_id).await
+                    article_controller::fetch_public_article(&article_id).await
                 };
                 match article {
                     Ok(article) => Some(article),
