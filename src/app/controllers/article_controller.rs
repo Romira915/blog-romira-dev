@@ -12,24 +12,63 @@ pub(crate) async fn fetch_articles() -> Result<Articles> {
 }
 
 #[cfg(feature = "ssr")]
-pub(crate) async fn fetch_article_with_public(article_id: &str) -> Result<Article> {
+pub(crate) async fn fetch_public_article(article_id: &str) -> Result<Article> {
     Article::fetch(article_id, false).await
 }
 
 #[cfg(feature = "ssr")]
-pub(crate) async fn fetch_article_with_preview(article_id: &str) -> Result<Article> {
+pub(crate) async fn fetch_preview_article(article_id: &str) -> Result<Article> {
     Article::fetch(article_id, true).await
 }
 
 #[cfg(feature = "ssr")]
-pub async fn get_article_ogp_tag<T>(article_id: &str, url: T, is_preview: bool) -> Result<String>
+pub fn home_ogp_tag<T>(url: T) -> Result<String>
+where
+    T: Display,
+{
+    let mut meta = String::new();
+    meta.push_str(&format!(
+        r###"<meta property="og:url" content="{}{}" />
+                            "###,
+        CONFIG.app_origin, url
+    ));
+    meta.push_str(&format!(
+        r###"<meta property="og:type" content="article" />
+        "###
+    ));
+    meta.push_str(&format!(
+        r###"<meta property="og:title" content="Romira's develop blog" />
+        "###,
+    ));
+    meta.push_str(&format!(
+        r###"<meta property="og:description" content="Rustaceanが書いているブログです．" />
+        "###,
+    ));
+    meta.push_str(&format!(
+        r###"<meta property="og:site_name" content="Romira's develop blog" />
+        "###,
+    ));
+    meta.push_str(&format!(
+        r###"<meta property="og:image" content="https://blog-romira.imgix.net/46cea3d7-14ce-45bf-9d1e-52d1df39f2d2/romira'sdevelopblog.png" />
+        "###,
+    ));
+    meta.push_str(&format!(
+        r###"<meta name="twitter:creator" content="@Romira915" />
+        "###,
+    ));
+
+    Ok(meta)
+}
+
+#[cfg(feature = "ssr")]
+pub async fn article_ogp_tag<T>(article_id: &str, url: T, is_preview: bool) -> Result<String>
 where
     T: Display,
 {
     let article = if is_preview {
-        fetch_article_with_preview(article_id).await?
+        fetch_preview_article(article_id).await?
     } else {
-        fetch_article_with_public(article_id).await?
+        fetch_public_article(article_id).await?
     };
 
     let mut meta = String::new();
@@ -39,7 +78,7 @@ where
         CONFIG.app_origin, url
     ));
     meta.push_str(&format!(
-        r###"<meta property="og:type" content="article" />
+        r###"<meta property="og:type" content="blog" />
         "###
     ));
     meta.push_str(&format!(
@@ -57,7 +96,7 @@ where
             .unwrap_or_default()
     ));
     meta.push_str(&format!(
-        r###"<meta property="og:site_name" content="romira's develop blog" />
+        r###"<meta property="og:site_name" content="Romira's develop blog" />
         "###,
     ));
     meta.push_str(&format!(

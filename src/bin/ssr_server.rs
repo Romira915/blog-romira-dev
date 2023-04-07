@@ -27,7 +27,7 @@ use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 use yew::platform::Runtime;
 
-use blog_romira_dev::app::controllers::article_controller::get_article_ogp_tag;
+use blog_romira_dev::app::controllers::article_controller;
 
 type Err = Box<dyn std::error::Error + Send + Sync + 'static>;
 
@@ -62,11 +62,15 @@ async fn render(
     let meta = match route {
         Ok(Route::Article { id }) => {
             log::debug!("Article OGP Setting {}", id);
-            get_article_ogp_tag(&id, &url, false).await
+            article_controller::article_ogp_tag(&id, &url, false).await
         }
         Ok(Route::Preview { id }) => {
             log::debug!("Preview OGP Setting {}", id);
-            get_article_ogp_tag(&id, &url, true).await
+            article_controller::article_ogp_tag(&id, &url, true).await
+        }
+        Ok(Route::Home) => {
+            log::debug!("Home OGP Setting");
+            article_controller::home_ogp_tag(&url)
         }
         _ => Ok("".to_string()),
     };
