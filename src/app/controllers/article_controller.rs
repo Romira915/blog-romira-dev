@@ -22,11 +22,20 @@ pub(crate) async fn fetch_preview_article(article_id: &str) -> Result<Article> {
 }
 
 #[cfg(feature = "ssr")]
+fn title_tag<T>(title: T) -> String
+where
+    T: Display,
+{
+    format!("<title>{}</title>", title)
+}
+
+#[cfg(feature = "ssr")]
 pub fn home_ogp_tag<T>(url: T) -> Result<String>
 where
     T: Display,
 {
     let mut meta = String::new();
+    meta.push_str(&title_tag("Romira's develop blog"));
     meta.push_str(&format!(
         r###"<meta property="og:url" content="{}{}" />
                             "###,
@@ -41,7 +50,7 @@ where
         "###,
     ));
     meta.push_str(&format!(
-        r###"<meta property="og:description" content="Rustaceanによる開発ブログです．技術共有や個人開発などを発信します．" />
+        r###"<meta property="og:description" content="Rustaceanによる開発ブログです．技術共有や個人開発の進捗などを発信します．" />
         "###,
     ));
     meta.push_str(&format!(
@@ -72,6 +81,7 @@ where
     };
 
     let mut meta = String::new();
+    meta.push_str(&title_tag(&article.title));
     meta.push_str(&format!(
         r###"<meta property="og:url" content="{}{}" />
         "###,
