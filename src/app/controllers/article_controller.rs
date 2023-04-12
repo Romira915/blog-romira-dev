@@ -37,6 +37,7 @@ where
 {
     let mut meta = String::new();
     meta.push_str(&title_tag("Romira's develop blog"));
+    meta.push_str(r###"<meta name="description" content="Rustaceanによる開発ブログです．技術共有や個人開発の進捗などを発信します．">"###);
     meta.push_str(&format!(
         r###"<meta property="og:url" content="{}{}" />
                             "###,
@@ -83,6 +84,15 @@ where
 
     let mut meta = String::new();
     meta.push_str(&title_tag(&article.title));
+    meta.push_str(&format!(
+        r###"<meta name="description" content="{}">
+        "###,
+        article
+            .meta
+            .as_ref()
+            .map(|m| m.description.as_str())
+            .unwrap_or_default()
+    ));
     meta.push_str(&format!(
         r###"<meta name="date" content="{}">
                     "###,
