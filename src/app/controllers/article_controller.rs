@@ -30,7 +30,7 @@ where
 }
 
 #[cfg(feature = "ssr")]
-pub fn home_ogp_tag<T>(url: T) -> Result<String>
+pub fn home_meta_tag<T>(url: T) -> Result<String>
 where
     T: Display,
 {
@@ -70,7 +70,7 @@ where
 }
 
 #[cfg(feature = "ssr")]
-pub async fn article_ogp_tag<T>(article_id: &str, url: T, is_preview: bool) -> Result<String>
+pub async fn article_meta_tag<T>(article_id: &str, url: T, is_preview: bool) -> Result<String>
 where
     T: Display,
 {

@@ -62,15 +62,15 @@ async fn render(
     let meta = match route {
         Ok(Route::Article { id }) => {
             log::debug!("Article OGP Setting {}", id);
-            article_controller::article_ogp_tag(&id, &url, false).await
+            article_controller::article_meta_tag(&id, &url, false).await
         }
         Ok(Route::Preview { id }) => {
             log::debug!("Preview OGP Setting {}", id);
-            article_controller::article_ogp_tag(&id, &url, true).await
+            article_controller::article_meta_tag(&id, &url, true).await
         }
         Ok(Route::Home) => {
             log::debug!("Home OGP Setting");
-            article_controller::home_ogp_tag(&url)
+            article_controller::home_meta_tag(&url)
         }
         _ => Ok("".to_string()),
     };
