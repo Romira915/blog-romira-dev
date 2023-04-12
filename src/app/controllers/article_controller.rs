@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use chrono::FixedOffset;
 use reqwest::Client;
 
 use crate::app::models::article::{Article, Articles};
@@ -30,7 +31,7 @@ where
 }
 
 #[cfg(feature = "ssr")]
-pub fn home_ogp_tag<T>(url: T) -> Result<String>
+pub fn home_meta_tag<T>(url: T) -> Result<String>
 where
     T: Display,
 {
@@ -70,7 +71,7 @@ where
 }
 
 #[cfg(feature = "ssr")]
-pub async fn article_ogp_tag<T>(article_id: &str, url: T, is_preview: bool) -> Result<String>
+pub async fn article_meta_tag<T>(article_id: &str, url: T, is_preview: bool) -> Result<String>
 where
     T: Display,
 {
@@ -82,6 +83,27 @@ where
 
     let mut meta = String::new();
     meta.push_str(&title_tag(&article.title));
+    meta.push_str(&format!(
+        r###"<meta name="date" content="{}">
+                    "###,
+        article
+            .sys
+            .updated_at
+            .with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap())
+            .to_rfc3339(),
+    ));
+    meta.push_str(&format!(
+        r###"<meta name="creation_date" content="{}">
+                    "###,
+        article
+            .sys
+            .raw
+            .first_published_at
+            .map(|d| d
+                .with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap())
+                .to_rfc3339())
+            .unwrap_or_default(),
+    ));
     meta.push_str(&format!(
         r###"<meta property="og:url" content="{}{}" />
         "###,
