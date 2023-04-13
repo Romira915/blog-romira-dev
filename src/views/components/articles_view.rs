@@ -15,7 +15,8 @@ pub(crate) fn ArticlesView(props: &ArticlesViewProps) -> Html {
     let ArticlesViewProps { articles } = props;
 
     html! {
-        <div>
+        <div class="py-3 px-5
+        bg-light-content-background dark:bg-dark-content-background">
         {
             articles.iter().map(|article| {
                 html! {

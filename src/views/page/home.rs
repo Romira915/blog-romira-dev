@@ -5,6 +5,7 @@ use yew::prelude::*;
 use crate::app::controllers::article_controller;
 use crate::app::models::article::Articles;
 use crate::views::components::articles_view::ArticlesView;
+use crate::views::components::author_view::AuthorView;
 
 #[derive(PartialEq, Properties)]
 pub(crate) struct HomeProps {}
@@ -20,10 +21,12 @@ pub(crate) fn Home(props: &HomeProps) -> HtmlResult {
     .unwrap();
 
     Ok(html! {
-        <div class="container mx-auto max-w-4xl py-3 px-5
-        bg-light-content-background
-        dark:bg-dark-content-background">
-            <ArticlesView articles={Rc::new(articles.items.clone())} />
+        <div>
+            <div class="container mx-auto max-w-4xl
+            ">
+                <ArticlesView articles={Rc::new(articles.items.clone())} />
+                <AuthorView />
+            </div>
         </div>
     })
 }
