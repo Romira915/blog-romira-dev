@@ -1,13 +1,14 @@
 use std::rc::Rc;
 
-use crate::{app::models::article::Article, routes::Route, settings::CONFIG};
+use crate::{
+    app::models::article::Article,
+    const_value::{HOUR, JST_TZ},
+    routes::Route,
+    settings::CONFIG,
+};
 use chrono::FixedOffset;
 use yew::{classes, function_component, html, Html, Properties};
 use yew_router::prelude::Link;
-
-const HOUR: i32 = 3600;
-/** JST (UCT+09:00) */
-const JST_TZ: i32 = 9;
 
 #[derive(PartialEq, Properties)]
 pub(crate) struct ArticleHeadlineViewProps {
@@ -42,7 +43,7 @@ pub(crate) fn ArticleHeadlineView(props: &ArticleHeadlineViewProps) -> Html {
         "bg-light-content-background", "text-light-text", "border-light-content-border",
         "dark:bg-dark-content-background", "dark:text-dark-text", "dark:border-dark-content-border")}>
             <figure class="flex-none m-3">
-                <img class="object-contain h-auto w-16 min-w-16 max-w-16" src={thumbnail_url} alt="thumbnail" width="64" decoding="auto" loading="lazy" />
+                <img class="object-contain h-auto w-16 min-w-16 max-w-16" src={thumbnail_url} alt="thumbnail" width="64" height="64" decoding="auto" loading="lazy" />
             </figure>
             <div class="flex flex-col items-start px-5 py-3">
                 <h2 class="flex font-bold text-base md:text-lg lg:text-xl">{title}</h2>

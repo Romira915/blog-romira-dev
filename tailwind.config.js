@@ -46,7 +46,11 @@ module.exports = {
         "light-button-bg-active": "#808080",
 
         // NOTE: 共通カラー
-        "link-text": "#31A0D3"
+        "link-text": "#31A0D3",
+        "twitter-brand": "#1DA1F2",
+        "twitter-light-bg": "#F5F8FA",
+        "twitter-dark-bg": "#14171A",
+        "github-brand": "#171515",
       },
       animation: {
         "slide-in-left": "slide-in-left 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940)   both",
