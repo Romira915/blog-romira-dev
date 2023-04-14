@@ -4,7 +4,8 @@ use chrono::FixedOffset;
 use reqwest::Client;
 
 use crate::app::models::article::{Article, Articles};
-use crate::settings::{CONFIG, NEWT_BASE_URL, NEWT_CDN_BASE_URL};
+use crate::const_value::{HOUR, JST_TZ};
+use crate::settings::CONFIG;
 use anyhow::{Context, Result};
 
 #[cfg(feature = "ssr")]
@@ -99,7 +100,7 @@ where
         article
             .sys
             .updated_at
-            .with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap())
+            .with_timezone(&FixedOffset::east_opt(JST_TZ * HOUR).unwrap())
             .to_rfc3339(),
     ));
     meta.push_str(&format!(
@@ -110,7 +111,7 @@ where
             .raw
             .first_published_at
             .map(|d| d
-                .with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap())
+                .with_timezone(&FixedOffset::east_opt(JST_TZ * HOUR).unwrap())
                 .to_rfc3339())
             .unwrap_or_default(),
     ));

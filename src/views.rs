@@ -19,8 +19,8 @@ use yew_router::{BrowserRouter, Router, Switch};
 use yewdux::prelude::use_store;
 
 use crate::{
+    const_value::COLOR_MODE_STATE_KEY,
     routes::Route,
-    settings::COLOR_MODE_STATE_KEY,
     state::{ColorMode, ColorModeActions},
     test_data::use_sleep,
     views::{articles::Posts, components::header::Header},

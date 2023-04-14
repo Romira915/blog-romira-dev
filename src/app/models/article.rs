@@ -4,10 +4,13 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::settings::{CONFIG, NEWT_BASE_URL, NEWT_CDN_BASE_URL};
+use crate::{
+    const_value::{NEWT_BASE_URL, NEWT_CDN_BASE_URL},
+    settings::CONFIG,
+};
 
 use super::{
-    author::Author,
+    author::{Author, AuthorInArticle},
     category::Category,
     fields::{Image, Meta, Sys},
     traits::Fetch,
@@ -56,7 +59,7 @@ pub(crate) struct Article {
     pub(crate) meta: Option<Meta>,
     pub(crate) body: Option<String>,
     pub(crate) cover_image: Option<Image>,
-    pub(crate) author: Option<Author>,
+    pub(crate) author: Option<AuthorInArticle>,
     pub(crate) categries: Option<Vec<Category>>,
 }
 

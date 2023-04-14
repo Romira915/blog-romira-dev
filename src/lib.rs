@@ -1,4 +1,5 @@
 pub mod app;
+pub(crate) mod const_value;
 pub mod prelude;
 pub mod routes;
 pub mod settings;
