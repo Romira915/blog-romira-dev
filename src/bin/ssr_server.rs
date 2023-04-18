@@ -150,22 +150,20 @@ async fn main() -> Result<(), Err> {
         )
     };
 
-    let app = Router::new()
-        .route("/api/test", get(|| async move { "Hello World" }))
-        .fallback(HandleError::new(
-            ServeDir::new(opts.dir)
-                .append_index_html_on_directories(false)
-                .fallback(
-                    render
-                        .layer(Extension((
-                            index_html_before.clone(),
-                            index_html_after.clone(),
-                        )))
-                        .into_service()
-                        .map_err(|err| -> std::io::Error { match err {} }),
-                ),
-            handle_error,
-        ));
+    let app = Router::new().fallback(HandleError::new(
+        ServeDir::new(opts.dir)
+            .append_index_html_on_directories(false)
+            .fallback(
+                render
+                    .layer(Extension((
+                        index_html_before.clone(),
+                        index_html_after.clone(),
+                    )))
+                    .into_service()
+                    .map_err(|err| -> std::io::Error { match err {} }),
+            ),
+        handle_error,
+    ));
 
     let address = "0.0.0.0:8080".parse()?;
     tracing::info!(message = "listening", addr = ?address);
