@@ -39,7 +39,7 @@ pub fn Header(props: &HeaderProps) -> Html {
                         {"Romira's develop blog"}
                     </a>
                 </h1>
-                <button onclick={toggle_color_mode} aria-labelledby="change-display-color">
+                <button onclick={toggle_color_mode}  aria-label="change-display-color" aria-labelledby="change-display-color">
                     {
                         if **color_mode == ColorMode::Light {
                             html! {
