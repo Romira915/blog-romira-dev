@@ -29,7 +29,7 @@ pub(crate) fn AuthorView(props: &AuthorViewProps) -> Html {
             <figure>
                 <img src={icon_src} alt="Romira" width="100" height="100" class="rounded-full" />
             </figure>
-            <h3 class="font-bold">{&author.full_name}</h3>
+            <p class="font-bold">{&author.full_name}</p>
             <p>{biography}</p>
             <div class="flex space-x-4">
                 <ExternalServiceIcon href={"https://twitter.com/Romira915".to_string()} service={ExternalService::Twitter} />

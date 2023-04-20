@@ -1,8 +1,10 @@
 use std::rc::Rc;
+use std::string::ToString;
 
+use strum_macros::{self, Display};
 use yew::prelude::*;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Display)]
 pub(crate) enum ExternalService {
     Twitter,
     GitHub,
@@ -34,7 +36,7 @@ pub(crate) fn ExternalServiceIcon(props: &ExternalServiceIconProps) -> Html {
     };
 
     html! {
-        <a href={href.clone()} target="_blank" rel="noopener noreferrer"
+        <a href={href.clone()} target="_blank" rel="noopener noreferrer" aria-label={format!("Author {} link.", &service)}
             class={classes!(common_a_class, a_class)}>
             <span class={classes!(common_span_class, span_class)}></span>
         </a>
