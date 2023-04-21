@@ -20,6 +20,7 @@ bytes = "1.4.0"
 chrono = {version = "0.4.23", features = ["serde"]}
 dotenv = "0.15.0"
 envy = "0.4.2"
+fern = {version = "0.6.2", features = ["colored"]}
 futures = {version = "0.3.26"}
 gloo = {version = "0.8.0", features = ["futures"]}
 log = "0.4.17"

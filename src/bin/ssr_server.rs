@@ -16,7 +16,7 @@ use axum::routing::get;
 use axum::{Extension, Router};
 use blog_romira_dev::prelude::{ServerApp, ServerAppProps};
 use blog_romira_dev::routes::Route;
-use blog_romira_dev::settings::CONFIG;
+use blog_romira_dev::settings::{init_logger, CONFIG};
 use clap::Parser;
 use futures::stream::{self, StreamExt};
 use hyper::server::Server;
@@ -125,11 +125,12 @@ where
 async fn main() -> Result<(), Err> {
     let opts = Opt::parse();
 
-    tracing_subscriber::fmt()
-        .with_env_filter(
-            EnvFilter::try_from_default_env().unwrap_or_else(|_| CONFIG.rust_log().into()),
-        )
-        .try_init()?;
+    // tracing_subscriber::fmt()
+    //     .with_env_filter(
+    //         EnvFilter::try_from_default_env().unwrap_or_else(|_| CONFIG.rust_log().into()),
+    //     )
+    //     .try_init()?;
+    init_logger(CONFIG.rust_log_to_log_level_filter(), None)?;
 
     let exec = Executor::default();
 
