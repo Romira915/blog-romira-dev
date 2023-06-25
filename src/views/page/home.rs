@@ -3,8 +3,8 @@ use std::rc::Rc;
 use yew::prelude::*;
 
 use crate::app::controllers::{article_controller, author_controller};
-use crate::app::models::article::Articles;
 use crate::app::models::author::Author;
+use crate::app::models::cms_article::CMSArticles;
 use crate::const_value::ROMIRA_CONTENT_ID;
 use crate::views::components::articles_view::ArticlesView;
 use crate::views::components::author_view::AuthorView;
@@ -17,7 +17,7 @@ pub(crate) fn Home(props: &HomeProps) -> HtmlResult {
     let HomeProps {} = props;
 
     let articles = use_prepared_state!(
-        async move |_| -> Articles { article_controller::fetch_articles().await.unwrap() },
+        async move |_| -> CMSArticles { article_controller::fetch_articles().await.unwrap() },
         ()
     )?
     .unwrap();

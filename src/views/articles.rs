@@ -1,5 +1,5 @@
-use crate::app::models::article::Article;
-use crate::app::{controllers::article_controller, models::article::Articles};
+use crate::app::models::cms_article::CMSArticle;
+use crate::app::{controllers::article_controller, models::cms_article::CMSArticles};
 #[cfg(feature = "ssr")]
 use crate::settings::CONFIG;
 use reqwest::Client;
@@ -26,7 +26,7 @@ async fn fetch_uuid() -> Uuid {
 pub fn Posts() -> HtmlResult {
     // let uuid = use_prepared_state!(async move |_| -> Uuid { fetch_uuid().await }, ())?.unwrap();
     let articles = use_prepared_state!(
-        async move |_| -> Articles { article_controller::fetch_articles().await.unwrap() },
+        async move |_| -> CMSArticles { article_controller::fetch_articles().await.unwrap() },
         ()
     )?
     .unwrap();

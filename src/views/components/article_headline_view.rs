@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use crate::{
-    app::models::article::Article,
+    app::models::cms_article::CMSArticle,
     const_value::{HOUR, JST_TZ},
     routes::Route,
     settings::CONFIG,
@@ -12,7 +12,7 @@ use yew_router::prelude::Link;
 
 #[derive(PartialEq, Properties)]
 pub(crate) struct ArticleHeadlineViewProps {
-    pub(crate) article: Rc<Article>,
+    pub(crate) article: Rc<CMSArticle>,
 }
 
 #[function_component]
