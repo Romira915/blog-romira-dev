@@ -1,11 +1,12 @@
 use anyhow::{bail, Context, Result};
 use async_trait::async_trait;
+use chrono::{DateTime, FixedOffset};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::{
-    const_value::{NEWT_BASE_URL, NEWT_CDN_BASE_URL},
+    const_value::{HOUR, JST_TZ, NEWT_BASE_URL, NEWT_CDN_BASE_URL, THUMBNAIL_NO_IMAGE_URL},
     settings::CONFIG,
 };
 
@@ -13,7 +14,7 @@ use super::{
     author::{Author, AuthorInArticle},
     category::Category,
     fields::{Image, Meta, Sys},
-    traits::Fetch,
+    traits::{ArticleTrait, Fetch},
 };
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
@@ -85,5 +86,41 @@ impl Article {
         let body = response.text().await?;
 
         serde_json::from_str(&body).with_context(|| format!("Failed to json parse. json: {}", body))
+    }
+}
+
+impl ArticleTrait for Article {
+    fn title(&self) -> String {
+        self.title.to_string()
+    }
+
+    fn href(&self) -> String {
+        format!("articles/{}", self.id)
+    }
+
+    fn thumbnail_url(&self) -> String {
+        self.cover_image
+            .as_ref()
+            .map_or(THUMBNAIL_NO_IMAGE_URL.to_string(), |img| {
+                img.src.to_string()
+            })
+    }
+
+    fn categorie(&self) -> Option<String> {
+        let category = self.categries.as_ref().map(|c| c.first());
+
+        match category {
+            Some(Some(category)) => Some(category.name.to_string()),
+            _ => None,
+        }
+    }
+
+    fn first_published_at(&self) -> Option<String> {
+        self.sys.raw.first_published_at.as_ref().map(|date| {
+            date.with_timezone(&FixedOffset::east_opt(JST_TZ * HOUR).unwrap())
+                .date_naive()
+                .format("%Y年%m月%d日")
+                .to_string()
+        })
     }
 }

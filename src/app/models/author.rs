@@ -44,11 +44,11 @@ impl Author {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct AuthorInArticle {
     #[serde(rename = "_id")]
-    id: String,
+    pub(crate) id: String,
     #[serde(rename = "_sys")]
-    sys: Sys,
-    full_name: String,
+    pub(crate) sys: Sys,
+    pub(crate) full_name: String,
     #[serde(rename = "profileImage")]
-    profile_image_id: Option<String>,
-    biography: Option<String>,
+    pub(crate) profile_image_id: Option<String>,
+    pub(crate) biography: Option<String>,
 }

@@ -4,6 +4,7 @@ use chrono::FixedOffset;
 use reqwest::Client;
 
 use crate::app::models::article::{Article, Articles};
+use crate::app::models::wp_article::WpArticles;
 use crate::const_value::{HOUR, JST_TZ};
 use crate::settings::CONFIG;
 use anyhow::{Context, Result};

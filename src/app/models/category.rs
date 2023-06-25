@@ -7,9 +7,9 @@ use super::fields::Sys;
 #[serde(rename_all = "camelCase")]
 pub(crate) struct Category {
     #[serde(rename = "_id")]
-    id: String,
+    pub(crate) id: String,
     #[serde(rename = "_sys")]
-    sys: Sys,
-    name: String,
-    slug: String,
+    pub(crate) sys: Sys,
+    pub(crate) name: String,
+    pub(crate) slug: String,
 }

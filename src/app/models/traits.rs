@@ -8,3 +8,11 @@ pub(crate) trait Fetch: Sized {
     where
         T: Display + Send + Sync;
 }
+
+pub(crate) trait ArticleTrait {
+    fn title(&self) -> String;
+    fn href(&self) -> String;
+    fn thumbnail_url(&self) -> String;
+    fn categorie(&self) -> Option<String>;
+    fn first_published_at(&self) -> Option<String>;
+}
