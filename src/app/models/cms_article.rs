@@ -61,7 +61,7 @@ pub(crate) struct CMSArticle {
     pub(crate) body: Option<String>,
     pub(crate) cover_image: Option<Image>,
     pub(crate) author: Option<AuthorInArticle>,
-    pub(crate) categries: Option<Vec<Category>>,
+    pub(crate) categories: Option<Vec<Category>>,
 }
 
 impl CMSArticle {
@@ -106,8 +106,8 @@ impl ArticleTrait for CMSArticle {
             })
     }
 
-    fn categorie(&self) -> Option<String> {
-        let category = self.categries.as_ref().map(|c| c.first());
+    fn category(&self) -> Option<String> {
+        let category = self.categories.as_ref().map(|c| c.first());
 
         match category {
             Some(Some(category)) => Some(category.name.to_string()),
@@ -115,12 +115,11 @@ impl ArticleTrait for CMSArticle {
         }
     }
 
-    fn first_published_at(&self) -> Option<String> {
-        self.sys.raw.first_published_at.as_ref().map(|date| {
-            date.with_timezone(&FixedOffset::east_opt(JST_TZ * HOUR).unwrap())
-                .date_naive()
-                .format("%Y年%m月%d日")
-                .to_string()
-        })
+    fn first_published_at(&self) -> Option<DateTime<FixedOffset>> {
+        self.sys
+            .raw
+            .first_published_at
+            .as_ref()
+            .map(|date| date.with_timezone(&FixedOffset::east_opt(JST_TZ * HOUR).unwrap()))
     }
 }

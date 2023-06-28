@@ -23,7 +23,7 @@ use crate::{
     routes::Route,
     state::{ColorMode, ColorModeActions},
     test_data::use_sleep,
-    views::{articles::Posts, components::header::Header},
+    views::components::header::Header,
 };
 
 use self::{

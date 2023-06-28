@@ -1,13 +1,15 @@
-use crate::const_value::{PRTIMES_WP_AUTHOR_ID, PRTIMES_WP_BASE_URL};
+use crate::const_value::{HOUR, JST_TZ, PRTIMES_WP_AUTHOR_ID, PRTIMES_WP_BASE_URL};
 use anyhow::{Context, Result};
-use chrono::NaiveDateTime;
+use chrono::{DateTime, FixedOffset, NaiveDateTime, TimeZone, Utc};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+
+use super::traits::ArticleTrait;
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct WpArticles {
-    articles: Vec<WpArticle>,
+    pub(crate) articles: Vec<WpArticle>,
 }
 
 impl WpArticles {
@@ -66,6 +68,32 @@ pub(crate) struct WpArticle {
     pub(crate) jetpack_shortlink: String,
     #[serde(rename = "_links")]
     pub(crate) links: Links,
+}
+
+impl ArticleTrait for WpArticle {
+    fn title(&self) -> String {
+        self.title.rendered.to_string()
+    }
+
+    fn href(&self) -> String {
+        self.link.to_string()
+    }
+
+    fn thumbnail_url(&self) -> String {
+        self.jetpack_featured_media_url.to_string()
+    }
+
+    fn category(&self) -> Option<String> {
+        // TODO: idからデータを引く
+        Some("開発".to_string())
+    }
+
+    fn first_published_at(&self) -> Option<chrono::DateTime<chrono::FixedOffset>> {
+        Some(DateTime::<FixedOffset>::from_utc(
+            self.date_gmt,
+            FixedOffset::east_opt(JST_TZ * HOUR).unwrap(),
+        ))
+    }
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]

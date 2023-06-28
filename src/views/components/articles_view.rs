@@ -1,14 +1,17 @@
 use std::rc::Rc;
 
 use crate::{
-    app::models::cms_article::{CMSArticle, CMSArticles},
+    app::models::{
+        article::{Article, Articles},
+        cms_article::{CMSArticle, CMSArticles},
+    },
     views::components::article_headline_view::ArticleHeadlineView,
 };
 use yew::prelude::*;
 
 #[derive(PartialEq, Properties)]
 pub(crate) struct ArticlesViewProps {
-    pub(crate) articles: Rc<CMSArticles>,
+    pub(crate) articles: Rc<Articles>,
 }
 
 #[function_component]
