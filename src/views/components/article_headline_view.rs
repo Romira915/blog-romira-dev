@@ -1,7 +1,10 @@
 use std::rc::Rc;
 
 use crate::{
-    app::models::{article::Article, cms_article::CMSArticle},
+    app::models::{
+        article::{Article, ArticleType},
+        cms_article::CMSArticle,
+    },
     const_value::{HOUR, JST_TZ},
     routes::Route,
     settings::CONFIG,
@@ -25,9 +28,14 @@ pub(crate) fn ArticleHeadlineView(props: &ArticleHeadlineViewProps) -> Html {
         .map_or("".to_string(), |d| {
             d.date_naive().format("%Y年%m月%d日").to_string()
         });
+    let (target, rel) = if article.r#type == ArticleType::CMS {
+        ("_self", "")
+    } else {
+        ("_blank", "noopener noreferrer")
+    };
 
     html! {
-        <a href={article.href.to_string()} class={classes!("container", "flex", "mx-auto", "m-7", "px-5", "py-3", "max-w-4xl",
+        <a href={article.href.to_string()} target={target} rel={rel} class={classes!("container", "flex", "mx-auto", "m-7", "px-5", "py-3", "max-w-4xl",
         "border-4", "rounded",
         "bg-light-content-background", "text-light-text", "border-light-content-border",
         "dark:bg-dark-content-background", "dark:text-dark-text", "dark:border-dark-content-border")}>
