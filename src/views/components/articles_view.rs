@@ -1,7 +1,10 @@
 use std::rc::Rc;
 
 use crate::{
-    app::models::article::{Article, Articles},
+    app::models::{
+        article::{Article, Articles},
+        cms_article::{CMSArticle, CMSArticles},
+    },
     views::components::article_headline_view::ArticleHeadlineView,
 };
 use yew::prelude::*;

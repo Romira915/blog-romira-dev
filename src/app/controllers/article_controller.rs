@@ -4,23 +4,44 @@ use chrono::FixedOffset;
 use reqwest::Client;
 
 use crate::app::models::article::{Article, Articles};
+use crate::app::models::cms_article::{CMSArticle, CMSArticles};
+use crate::app::models::traits::ArticleTrait;
+use crate::app::models::wp_article::WpArticles;
 use crate::const_value::{HOUR, JST_TZ};
 use crate::settings::CONFIG;
 use anyhow::{Context, Result};
 
-#[cfg(feature = "ssr")]
+// #[cfg(feature = "ssr")]
 pub(crate) async fn fetch_articles() -> Result<Articles> {
-    Articles::fetch(false).await
+    let cms_articles = CMSArticles::fetch(false).await?;
+    let wp_articles = WpArticles::fetch().await?;
+
+    let mut articles: Vec<Article> = cms_articles
+        .items
+        .iter()
+        .map(|a| Article::from(a))
+        .collect();
+    articles.append(
+        &mut wp_articles
+            .articles
+            .iter()
+            .map(|a| Article::from(a))
+            .collect(),
+    );
+    articles.sort_by_key(|a| a.first_published_at);
+    articles.reverse();
+
+    Ok(Articles { items: articles })
 }
 
 #[cfg(feature = "ssr")]
-pub(crate) async fn fetch_public_article(article_id: &str) -> Result<Article> {
-    Article::fetch(article_id, false).await
+pub(crate) async fn fetch_public_article(article_id: &str) -> Result<CMSArticle> {
+    CMSArticle::fetch(article_id, false).await
 }
 
 #[cfg(feature = "ssr")]
-pub(crate) async fn fetch_preview_article(article_id: &str) -> Result<Article> {
-    Article::fetch(article_id, true).await
+pub(crate) async fn fetch_preview_article(article_id: &str) -> Result<CMSArticle> {
+    CMSArticle::fetch(article_id, true).await
 }
 
 #[cfg(feature = "ssr")]
