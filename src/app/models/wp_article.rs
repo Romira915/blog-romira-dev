@@ -1,6 +1,10 @@
-use crate::const_value::{HOUR, JST_TZ, PRTIMES_WP_AUTHOR_ID, PRTIMES_WP_BASE_URL};
+use crate::{
+    app::models::wp_category::Category,
+    const_value::{HOUR, JST_TZ, PRTIMES_WP_AUTHOR_ID, PRTIMES_WP_BASE_URL},
+};
 use anyhow::{Context, Result};
 use chrono::{DateTime, FixedOffset, NaiveDateTime, TimeZone, Utc};
+use futures::{future, stream::StreamExt};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
@@ -25,8 +29,20 @@ impl WpArticles {
 
         let body = response.text().await?;
 
-        let wp_articles = serde_json::from_str::<Vec<WpArticle>>(&body)
+        let mut wp_articles = serde_json::from_str::<Vec<WpArticle>>(&body)
             .with_context(|| format!("Failed to json parse. json: {}", body))?;
+        for wp_article in &mut wp_articles {
+            let categorys = wp_article
+                .categories
+                .iter()
+                .map(|category_id| async { Category::fetch(*category_id).await })
+                .collect::<futures::stream::FuturesUnordered<_>>()
+                .filter(|c| future::ready(c.is_ok()))
+                .map(|c| c.unwrap())
+                .collect()
+                .await;
+            wp_article.category_names = categorys;
+        }
 
         Ok(Self {
             articles: wp_articles,
@@ -68,6 +84,8 @@ pub(crate) struct WpArticle {
     pub(crate) jetpack_shortlink: String,
     #[serde(rename = "_links")]
     pub(crate) links: Links,
+    #[serde(skip_serializing, skip_deserializing)]
+    pub(crate) category_names: Vec<Category>,
 }
 
 impl ArticleTrait for WpArticle {
@@ -84,8 +102,13 @@ impl ArticleTrait for WpArticle {
     }
 
     fn category(&self) -> Option<String> {
-        // TODO: idからデータを引く
-        Some("開発".to_string())
+        Some(
+            self.category_names
+                .iter()
+                .map(|c| c.name.to_string())
+                .collect::<Vec<String>>()
+                .join(", "),
+        )
     }
 
     fn first_published_at(&self) -> Option<chrono::DateTime<chrono::FixedOffset>> {
