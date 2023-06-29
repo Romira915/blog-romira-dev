@@ -12,7 +12,7 @@ use crate::{
 
 use super::{
     author::{Author, AuthorInArticle},
-    category::Category,
+    cms_category::Category,
     fields::{Image, Meta, Sys},
     traits::{ArticleTrait, Fetch},
 };
