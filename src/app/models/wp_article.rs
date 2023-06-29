@@ -104,10 +104,8 @@ impl ArticleTrait for WpArticle {
     fn category(&self) -> Option<String> {
         Some(
             self.category_names
-                .iter()
-                .map(|c| c.name.to_string())
-                .collect::<Vec<String>>()
-                .join(", "),
+                .first()
+                .map_or("".to_string(), |c| c.name.to_string()),
         )
     }
 
