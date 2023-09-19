@@ -19,7 +19,9 @@ use blog_romira_dev::routes::Route;
 use blog_romira_dev::settings::{init_logger, CONFIG};
 use clap::Parser;
 use futures::stream::{self, StreamExt};
+use hyper::header::CACHE_CONTROL;
 use hyper::server::Server;
+use hyper::HeaderMap;
 use tower::ServiceExt;
 use tower_http::services::ServeDir;
 use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
@@ -59,7 +61,7 @@ async fn render(
 
     let route = Route::from_str(&url);
 
-    let meta = match route {
+    let meta = match &route {
         Ok(Route::Article { id }) => {
             log::debug!("Article OGP Setting {}", id);
             article_controller::article_meta_tag(&id, &url, false).await
@@ -79,6 +81,34 @@ async fn render(
         Err(e) => log::warn!("{:#}", e),
     }
 
+    let headers = match &route {
+        Ok(Route::Article { id }) => {
+            let mut headers = HeaderMap::new();
+            headers.insert(
+                CACHE_CONTROL,
+                format!("max-age={}", 60 * 60 * 24 * 365).parse().unwrap(),
+            );
+            headers
+        }
+        Ok(Route::Preview { id }) => {
+            let mut headers = HeaderMap::new();
+            headers.insert(
+                CACHE_CONTROL,
+                "no-cache, no-store, must-revalidate".parse().unwrap(),
+            );
+            headers
+        }
+        Ok(Route::Home) => {
+            let mut headers = HeaderMap::new();
+            headers.insert(
+                CACHE_CONTROL,
+                format!("max-age={}", 60 * 60 * 24 * 365).parse().unwrap(),
+            );
+            headers
+        }
+        _ => HeaderMap::new(),
+    };
+
     let index_html_before = format!("{}{}", index_html_top, index_html_head);
 
     let renderer = yew::ServerRenderer::<ServerApp>::with_props(move || ServerAppProps {
@@ -96,7 +126,7 @@ async fn render(
     //         .chain(stream::once(async move { index_html_after }))
     //         .map(Result::<_, Infallible>::Ok),
     // )
-    Html(body)
+    (headers, Html(body))
 }
 
 // An executor to process requests on the Yew runtime.
