@@ -54,10 +54,14 @@ async fn render(
 ) -> impl IntoResponse {
     let url = url.uri().to_string();
 
-    log::debug!("index {:#?}", index_html_before.split_once("<head>"));
-    let (index_html_top, index_html_head) = index_html_before.split_once("<head>").unwrap();
+    log::debug!(
+        "index {:#?}",
+        index_html_before.split_once("<html lang=\"ja\">")
+    );
+    let (index_html_top, index_html_head) =
+        index_html_before.split_once("<html lang=\"ja\">").unwrap();
     let mut index_html_top = index_html_top.to_owned();
-    index_html_top.push_str(r###"<head prefix=og: http://ogp.me/ns#>"###);
+    index_html_top.push_str(r###"<html lang=\"ja\"><head prefix=og: http://ogp.me/ns#>"###);
 
     let route = Route::from_str(&url);
 
