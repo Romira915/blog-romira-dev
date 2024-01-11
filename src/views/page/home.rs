@@ -19,6 +19,7 @@ pub(crate) fn Home(props: &HomeProps) -> HtmlResult {
 
     let articles = use_prepared_state!(
         async move |_| -> Articles {
+            log::info!("fetch articles.");
             article_controller::fetch_articles()
                 .await
                 .unwrap_or_default()
