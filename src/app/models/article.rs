@@ -9,12 +9,18 @@ pub(crate) enum ArticleType {
     WordPress,
 }
 
-#[derive(Clone, PartialEq, Serialize, Deserialize)]
+impl Default for ArticleType {
+    fn default() -> Self {
+        Self::CMS
+    }
+}
+
+#[derive(Clone, PartialEq, Serialize, Deserialize, Default)]
 pub(crate) struct Articles {
     pub(crate) items: Vec<Article>,
 }
 
-#[derive(Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Serialize, Deserialize, Default)]
 pub(crate) struct Article {
     pub(crate) title: String,
     pub(crate) href: String,
