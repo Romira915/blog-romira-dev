@@ -14,7 +14,13 @@ use anyhow::{Context, Result};
 // #[cfg(feature = "ssr")]
 pub(crate) async fn fetch_articles() -> Result<Articles> {
     let cms_articles = CMSArticles::fetch(false).await?;
-    let wp_articles = WpArticles::fetch().await?;
+    let wp_articles = match WpArticles::fetch().await {
+        Ok(wp_articles) => wp_articles,
+        Err(e) => {
+            log::warn!("Failed to fetch wp_articles. error: {}", e);
+            WpArticles::default()
+        }
+    };
 
     let mut articles: Vec<Article> = cms_articles
         .items

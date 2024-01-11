@@ -130,6 +130,7 @@ pub(crate) struct Title {
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 pub(crate) struct Content {
     pub(crate) rendered: String,
+    pub(crate) protected: bool,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
@@ -153,7 +154,6 @@ pub(crate) struct Meta {
     pub(crate) jetpack_seo_noindex: bool,
     pub(crate) swell_btn_cv_data: String,
     pub(crate) jetpack_publicize_message: String,
-    pub(crate) jetpack_is_tweetstorm: bool,
     pub(crate) jetpack_publicize_feature_enabled: bool,
     pub(crate) jetpack_social_post_already_shared: bool,
     pub(crate) jetpack_social_options: JetpackSocialOptions,
