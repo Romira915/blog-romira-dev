@@ -55,8 +55,10 @@ async fn render(
     let url = url.uri().to_string();
 
     log::debug!("index {:#?}", index_html_before.split_once("</head>"));
+    // <head>タグがビルド時に消えるため暫定対応
     let (index_html_top, index_html_head) = index_html_before.split_once("</head>").unwrap();
     let mut index_html_top = index_html_top.to_owned();
+    // <head>タグがビルド時に消えるため暫定対応
     // index_html_top.push_str(r###"<head prefix=og: http://ogp.me/ns#>"###);
 
     let route = Route::from_str(&url);
@@ -80,6 +82,7 @@ async fn render(
         Ok(meta) => index_html_top.push_str(&meta),
         Err(e) => log::warn!("{:#}", e),
     }
+    // <head>タグがビルド時に消えるため暫定対応
     index_html_top.push_str(r###"</head>"###);
 
     let headers = match &route {
