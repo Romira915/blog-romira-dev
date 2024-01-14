@@ -2,7 +2,7 @@ use std::rc::Rc;
 
 use gloo::storage::{LocalStorage, Storage};
 use yew::{
-    function_component, html, use_effect_with_deps, Callback, Html, MouseEvent, Properties,
+    function_component, html, Callback, Html, MouseEvent, Properties,
     UseReducerHandle, UseStateHandle,
 };
 use yew_router::prelude::Link;
@@ -13,7 +13,7 @@ use crate::{
     state::{ColorMode, ColorModeActions},
 };
 
-#[derive(PartialEq, Properties)]
+#[derive(PartialEq, Properties, Clone)]
 pub struct HeaderProps {
     pub(crate) color_mode: UseReducerHandle<ColorMode>,
 }

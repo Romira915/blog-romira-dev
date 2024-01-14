@@ -9,7 +9,7 @@ use crate::{
 };
 use yew::prelude::*;
 
-#[derive(PartialEq, Properties)]
+#[derive(PartialEq, Properties, Clone)]
 pub(crate) struct ArticlesViewProps {
     pub(crate) articles: Rc<Articles>,
 }

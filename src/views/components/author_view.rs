@@ -7,7 +7,7 @@ use crate::{
     views::components::external_service_icon::{ExternalService, ExternalServiceIcon},
 };
 
-#[derive(PartialEq, Properties)]
+#[derive(PartialEq, Properties, Clone)]
 pub(crate) struct AuthorViewProps {
     pub(crate) author: Rc<Author>,
 }

@@ -13,7 +13,7 @@ use chrono::FixedOffset;
 use yew::{classes, function_component, html, Html, Properties};
 use yew_router::prelude::Link;
 
-#[derive(PartialEq, Properties)]
+#[derive(PartialEq, Properties, Clone)]
 pub(crate) struct ArticleHeadlineViewProps {
     pub(crate) article: Rc<Article>,
 }
