@@ -90,23 +90,32 @@ async fn render(
             let mut headers = HeaderMap::new();
             headers.insert(
                 CACHE_CONTROL,
-                format!("max-age={}", 60 * 60 * 24 * 365).parse().unwrap(),
+                format!(
+                    "max-age={}, s-maxage={}",
+                    60 * 60 * 24 * 365,
+                    60 * 60 * 24 * 365
+                )
+                .parse()
+                .unwrap(),
             );
             headers
         }
         Ok(Route::Preview { id }) => {
             let mut headers = HeaderMap::new();
-            headers.insert(
-                CACHE_CONTROL,
-                "no-cache, no-store, must-revalidate".parse().unwrap(),
-            );
+            headers.insert(CACHE_CONTROL, "no-cache, no-store".parse().unwrap());
             headers
         }
         Ok(Route::Home) => {
             let mut headers = HeaderMap::new();
             headers.insert(
                 CACHE_CONTROL,
-                format!("max-age={}", 60 * 60 * 24 * 365).parse().unwrap(),
+                format!(
+                    "max-age={}, s-maxage={}",
+                    60 * 60 * 24 * 365,
+                    60 * 60 * 24 * 365
+                )
+                .parse()
+                .unwrap(),
             );
             headers
         }
