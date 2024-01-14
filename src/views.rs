@@ -10,10 +10,7 @@ use gloo::{
 };
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumIter};
-use yew::{
-    classes, function_component, html, use_effect_with_deps, use_reducer, use_state, AttrValue,
-    Callback, Html, Properties, Reducible, Suspense,
-};
+use yew::{classes, function_component, html, use_reducer, use_state, AttrValue, Callback, Html, Properties, Reducible, Suspense, use_effect_with};
 use yew_hooks::use_effect_once;
 use yew_router::{BrowserRouter, Router, Switch};
 use yewdux::prelude::use_store;
@@ -44,7 +41,7 @@ pub fn App() -> Html {
     }
 }
 
-#[derive(Properties, PartialEq, Eq, Debug)]
+#[derive(Properties, PartialEq, Eq, Debug, Clone)]
 pub struct ServerAppProps {
     pub url: AttrValue,
     pub queries: HashMap<String, String>,
@@ -87,14 +84,11 @@ pub fn Content() -> Html {
         }
     });
 
-    use_effect_with_deps(
-        move |state| {
-            log::debug!("Set LocalStorage key {}", COLOR_MODE_STATE_KEY);
-            LocalStorage::set(COLOR_MODE_STATE_KEY, *state.clone()).expect("failed to set");
-            || ()
-        },
-        color_mode.clone(),
-    );
+    use_effect_with(color_mode.clone(),move |state| {
+        log::debug!("Set LocalStorage key {}", COLOR_MODE_STATE_KEY);
+        LocalStorage::set(COLOR_MODE_STATE_KEY, *state.clone()).expect("failed to set");
+        || ()
+    });
 
     html!(
         <div class={&color_mode.to_string()}>

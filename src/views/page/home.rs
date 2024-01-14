@@ -18,24 +18,24 @@ pub(crate) fn Home(props: &HomeProps) -> HtmlResult {
     let HomeProps {} = props;
 
     let articles = use_prepared_state!(
+        (),
         async move |_| -> Articles {
             log::info!("fetch articles.");
             article_controller::fetch_articles()
                 .await
                 .unwrap_or_default()
-        },
-        ()
+        }
     )?
-    .unwrap();
+        .unwrap();
     let author = use_prepared_state!(
+        (),
         async move |_| -> Author {
             author_controller::fetch_author(ROMIRA_CONTENT_ID)
                 .await
                 .unwrap_or_default()
-        },
-        ()
+        }
     )?
-    .unwrap();
+        .unwrap();
 
     Ok(html! {
         <div>

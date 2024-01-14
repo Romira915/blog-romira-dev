@@ -4,13 +4,13 @@ use std::string::ToString;
 use strum_macros::{self, Display};
 use yew::prelude::*;
 
-#[derive(Debug, PartialEq, Eq, Display)]
+#[derive(Debug, PartialEq, Eq, Display, Clone)]
 pub(crate) enum ExternalService {
     Twitter,
     GitHub,
 }
 
-#[derive(PartialEq, Properties)]
+#[derive(PartialEq, Properties, Clone)]
 pub(crate) struct ExternalServiceIconProps {
     pub(crate) href: String,
     pub(crate) service: ExternalService,
@@ -26,9 +26,9 @@ pub(crate) fn ExternalServiceIcon(props: &ExternalServiceIconProps) -> Html {
         "fa-brands absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]";
 
     let (a_class, span_class) = match service {
-        ExternalService::Twitter => ("border-twitter-brand text-twitter-brand hover:text-white 
+        ExternalService::Twitter => ("border-twitter-brand text-twitter-brand hover:text-white
             bg-twitter-light-bg dark:bg-twitter-dark-bg hover:bg-twitter-brand dark:hover:bg-twitter-brand", "fa-twitter")
-        ,ExternalService::GitHub => ("border-github-brand 
+        ,ExternalService::GitHub => ("border-github-brand
             text-github-brand dark:text-white
             hover:text-white dark:hover:text-github-brand
             bg-github-white dark:bg-github-brand
