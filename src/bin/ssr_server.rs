@@ -6,11 +6,11 @@ use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::Arc;
 
-use axum::body::{Body, StreamBody};
+use axum::body::Body;
 use axum::error_handling::HandleError;
-use axum::extract::Query;
+use axum::extract::{Query, State};
 use axum::handler::Handler;
-use axum::http::{Request, StatusCode};
+use axum::http::{Request, StatusCode, Uri};
 use axum::response::{Html, IntoResponse};
 use axum::routing::get;
 use axum::{Extension, Router};
@@ -20,9 +20,8 @@ use blog_romira_dev::settings::{init_logger, CONFIG};
 use clap::Parser;
 use futures::stream::{self, StreamExt};
 use hyper::header::CACHE_CONTROL;
-use hyper::server::Server;
 use hyper::HeaderMap;
-use tower::ServiceExt;
+use tower::{MakeService, ServiceExt};
 use tower_http::services::ServeDir;
 use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
@@ -48,11 +47,11 @@ struct Opt {
 }
 
 async fn render(
-    Extension((index_html_before, index_html_after)): Extension<(String, String)>,
-    url: Request<Body>,
+    uri: Uri,
     Query(queries): Query<HashMap<String, String>>,
+    State((index_html_before, index_html_after)): State<(String, String)>,
 ) -> impl IntoResponse {
-    let url = url.uri().to_string();
+    let path = uri.path().to_string();
 
     log::debug!("index {:#?}", index_html_before.split_once("</head>"));
     // <head>タグがビルド時に消えるため暫定対応
@@ -61,20 +60,20 @@ async fn render(
     // <head>タグがビルド時に消えるため暫定対応
     // index_html_top.push_str(r###"<head prefix=og: http://ogp.me/ns#>"###);
 
-    let route = Route::from_str(&url);
+    let route = Route::from_str(&path);
 
     let meta = match &route {
         Ok(Route::Article { id }) => {
             log::debug!("Article OGP Setting {}", id);
-            article_controller::article_meta_tag(&id, &url, false).await
+            article_controller::article_meta_tag(&id, &path, false).await
         }
         Ok(Route::Preview { id }) => {
             log::debug!("Preview OGP Setting {}", id);
-            article_controller::article_meta_tag(&id, &url, true).await
+            article_controller::article_meta_tag(&id, &path, true).await
         }
         Ok(Route::Home) => {
             log::debug!("Home OGP Setting");
-            article_controller::home_meta_tag(&url)
+            article_controller::home_meta_tag(&path)
         }
         _ => Ok("".to_string()),
     };
@@ -125,7 +124,7 @@ async fn render(
     let index_html_before = format!("{}{}", index_html_top, index_html_head);
 
     let renderer = yew::ServerRenderer::<ServerApp>::with_props(move || ServerAppProps {
-        url: url.into(),
+        url: path.into(),
         queries,
     });
 
@@ -194,29 +193,21 @@ async fn main() -> Result<(), Err> {
         )
     };
 
-    let app = Router::new().fallback(HandleError::new(
+    let app = Router::new().fallback_service(HandleError::new(
         ServeDir::new(opts.dir)
             .append_index_html_on_directories(false)
             .fallback(
-                render
-                    .layer(Extension((
-                        index_html_before.clone(),
-                        index_html_after.clone(),
-                    )))
-                    .into_service()
-                    .map_err(|err| -> std::io::Error { match err {} }),
+                get(render).with_state((index_html_before.clone(), index_html_after.clone())),
             ),
         handle_error,
     ));
 
-    let address = "0.0.0.0:8080".parse()?;
+    let address = "0.0.0.0:8080";
+    let listener = tokio::net::TcpListener::bind(address).await?;
     tracing::info!(message = "listening", addr = ?address);
     log::info!("Browser to {}", CONFIG.app_origin);
 
-    Server::bind(&address)
-        .executor(exec)
-        .serve(app.into_make_service())
-        .await?;
+    axum::serve(listener, app).await?;
 
     Ok(())
 }
