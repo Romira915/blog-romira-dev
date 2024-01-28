@@ -2,8 +2,8 @@ use std::rc::Rc;
 
 use gloo::storage::{LocalStorage, Storage};
 use yew::{
-    function_component, html, Callback, Html, MouseEvent, Properties,
-    UseReducerHandle, UseStateHandle,
+    function_component, html, Callback, Html, MouseEvent, Properties, UseReducerHandle,
+    UseStateHandle,
 };
 use yew_router::prelude::Link;
 use yewdux::prelude::{use_store, Dispatch};

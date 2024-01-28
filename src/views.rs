@@ -10,7 +10,10 @@ use gloo::{
 };
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumIter};
-use yew::{classes, function_component, html, use_reducer, use_state, AttrValue, Callback, Html, Properties, Reducible, Suspense, use_effect_with};
+use yew::{
+    classes, function_component, html, use_effect_with, use_reducer, use_state, AttrValue,
+    Callback, Html, Properties, Reducible, Suspense,
+};
 use yew_hooks::use_effect_once;
 use yew_router::{BrowserRouter, Router, Switch};
 use yewdux::prelude::use_store;
@@ -84,7 +87,7 @@ pub fn Content() -> Html {
         }
     });
 
-    use_effect_with(color_mode.clone(),move |state| {
+    use_effect_with(color_mode.clone(), move |state| {
         log::debug!("Set LocalStorage key {}", COLOR_MODE_STATE_KEY);
         LocalStorage::set(COLOR_MODE_STATE_KEY, *state.clone()).expect("failed to set");
         || ()

@@ -19,23 +19,20 @@ pub(crate) fn ArticleView(props: &ArticleViewProps) -> HtmlResult {
     let article = {
         let article_id = article_id.clone();
         let is_preview = is_preview.clone().unwrap_or_else(|| false);
-        use_prepared_state!(
-            (),
-            async move |_| -> Option<CMSArticle> {
-                let article = if is_preview {
-                    article_controller::fetch_preview_article(&article_id).await
-                } else {
-                    article_controller::fetch_public_article(&article_id).await
-                };
-                match article {
-                    Ok(article) => Some(article),
-                    Err(e) => {
-                        log::warn!("{:#} article_id: {}", e, article_id);
-                        None
-                    }
+        use_prepared_state!((), async move |_| -> Option<CMSArticle> {
+            let article = if is_preview {
+                article_controller::fetch_preview_article(&article_id).await
+            } else {
+                article_controller::fetch_public_article(&article_id).await
+            };
+            match article {
+                Ok(article) => Some(article),
+                Err(e) => {
+                    log::warn!("{:#} article_id: {}", e, article_id);
+                    None
                 }
             }
-        )?
+        })?
     }
     .unwrap();
 
