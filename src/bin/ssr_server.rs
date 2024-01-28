@@ -186,32 +186,21 @@ async fn main() -> Result<(), Err> {
 
     let index_html_after = index_html_after.to_owned();
 
-    // let handle_error = |e| async move {
-    //     (
-    //         StatusCode::INTERNAL_SERVER_ERROR,
-    //         format!("error occurred: {e}"),
-    //     )
-    // };
-    //
-    // let app = Router::new().fallback_service(HandleError::new(
-    //     ServeDir::new(opts.dir)
-    //         .append_index_html_on_directories(false)
-    //         .fallback(
-    //             get(render)
-    //                 .with_state((index_html_before.clone(), index_html_after.clone()))
-    //                 .into_service()
-    //                 .map_err(|err| -> std::io::Error { match err {} }),
-    //         ),
-    //     handle_error,
-    // ));
+    let handle_error = |e| async move {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("error occurred: {e}"),
+        )
+    };
 
-    let app = Router::new().fallback_service(
+    let app = Router::new().fallback_service(HandleError::new(
         ServeDir::new(opts.dir)
             .append_index_html_on_directories(false)
             .fallback(
                 get(render).with_state((index_html_before.clone(), index_html_after.clone())),
             ),
-    );
+        handle_error,
+    ));
 
     let address = "0.0.0.0:8080";
     let listener = tokio::net::TcpListener::bind(address).await?;
